@@ -1,5 +1,12 @@
 import { getSupabase } from "@/lib/db/supabase";
-import type { Assessment, Attempt, HablaUser, PracticeItem, Store } from "./Store";
+import type {
+  Assessment,
+  Attempt,
+  HablaUser,
+  PracticeItem,
+  Session,
+  Store,
+} from "./Store";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function rowToItem(row: any): PracticeItem {
@@ -74,6 +81,7 @@ export class SupabaseStore implements Store {
       topics: data.topics ?? [],
       correctionIntensity: data.correction_intensity ?? "standard",
       streakCount: data.streak_count ?? 0,
+      lastActiveDate: data.last_active_date ?? null,
       createdAt: data.created_at,
     };
   }
@@ -92,6 +100,7 @@ export class SupabaseStore implements Store {
       topics: user.topics,
       correction_intensity: user.correctionIntensity,
       streak_count: user.streakCount,
+      last_active_date: user.lastActiveDate,
     });
     if (error) throw error;
   }
@@ -167,6 +176,36 @@ export class SupabaseStore implements Store {
       should_reappear: a.shouldReappear,
     });
     if (error) throw error;
+  }
+
+  async saveSession(s: Session): Promise<void> {
+    const { error } = await getSupabase().from("sessions").insert({
+      id: s.id,
+      user_id: s.userId,
+      exercise_blocks: s.exerciseBlocks,
+      duration_seconds: s.durationSeconds,
+      completed: s.completed,
+    });
+    if (error) throw error;
+  }
+
+  async listSessions(userId: string): Promise<Session[]> {
+    const { data, error } = await getSupabase()
+      .from("sessions")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: true });
+    if (error) throw error;
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    return (data ?? []).map((row: any) => ({
+      id: row.id,
+      userId: row.user_id,
+      exerciseBlocks: row.exercise_blocks ?? [],
+      durationSeconds: row.duration_seconds,
+      completed: row.completed,
+      createdAt: row.created_at,
+    }));
+    /* eslint-enable @typescript-eslint/no-explicit-any */
   }
 
   async listAttempts(userId: string): Promise<Attempt[]> {

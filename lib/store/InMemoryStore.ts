@@ -1,4 +1,11 @@
-import type { Assessment, Attempt, HablaUser, PracticeItem, Store } from "./Store";
+import type {
+  Assessment,
+  Attempt,
+  HablaUser,
+  PracticeItem,
+  Session,
+  Store,
+} from "./Store";
 
 /**
  * In-memory store. Used in test mode and as the local-dev default when
@@ -10,6 +17,7 @@ export class InMemoryStore implements Store {
   private assessments: Assessment[] = [];
   private items = new Map<string, PracticeItem>();
   private attempts: Attempt[] = [];
+  private sessions: Session[] = [];
 
   async getUser(id: string): Promise<HablaUser | null> {
     return this.users.get(id) ?? null;
@@ -47,5 +55,15 @@ export class InMemoryStore implements Store {
 
   async listAttempts(userId: string): Promise<Attempt[]> {
     return this.attempts.filter((a) => a.userId === userId);
+  }
+
+  async saveSession(session: Session): Promise<void> {
+    this.sessions.push(session);
+  }
+
+  async listSessions(userId: string): Promise<Session[]> {
+    return this.sessions
+      .filter((s) => s.userId === userId)
+      .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   }
 }

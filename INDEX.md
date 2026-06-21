@@ -70,10 +70,13 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 - 🚧 `/lib/exercises/conversation/missions.ts` — seeded scenario missions; `pickMission`. Unit-tested.
 - 🚧 `/lib/exercises/conversation/converse.ts` — `converseTurn` (reply + capped correction) + `summarizeConversation` via AI seam (zod). Integration-tested.
 
-### Pure logic (Iteration 5 — not yet built)
-- ⬜ `/lib/srs/interleaver.ts` — no two same exercise types adjacent.
-- ⬜ `/lib/session/orchestrator.ts` — pick 3 blocks + recap, time-budget to ~17 min.
-- ⬜ `/lib/session/registry.ts` — Exercise registry.
+### Daily session & progress (Iteration 5) — built + self-tested
+- 🚧 `/lib/srs/interleaver.ts` — `interleave` (no two same types adjacent). Unit-tested.
+- 🚧 `/lib/session/registry.ts` — exercise specs (`EXERCISES`, estimated minutes).
+- 🚧 `/lib/session/orchestrator.ts` — `planDailySession` (budgeted + interleaved). Unit-tested.
+- 🚧 `/lib/session/streak.ts` — `computeStreak` (days, not minutes). Unit-tested.
+- 🚧 `/lib/levels/gapSeries.ts` — `gapOverTime` for the progress trend. Unit-tested.
+- 🚧 Store extended: `saveSession`/`listSessions` + `Session` type; `HablaUser.lastActiveDate`.
 
 ### Exercises (`Exercise` contract — see BUILD_PLAN Part C)
 - ⬜ `/lib/exercises/reactivation/` — Iteration 2 (SRS cloze, savings).
@@ -89,7 +92,9 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 - 🚧 `/app/bridge/` — Bridge Drill: `page.tsx` + `BridgeDrillExercise.tsx` (5 steps + stuck ladder) + `actions.ts`.
 - 🚧 `/app/conversation/` — Guided mission: `page.tsx` (`pickMission`) + `ConversationMissionUI.tsx` (chat + live Notes panel + recap) + `actions.ts` (`converseTurnAction`, `finishConversationAction`).
 - 🚧 `/app/settings/` — correction intensity (`SettingsForm.tsx` + `actions.ts`). Voice/level-adjust: later.
-- ⬜ `/app/session/` — Iteration 5 (the daily-session player).
+- 🚧 `/app/session/` — daily session: `page.tsx` (plans + fetches all blocks) + `SessionPlayer.tsx` (runs blocks via onComplete, recap + streak) + `actions.ts` (`completeSessionAction`).
+- 🚧 `/app/progress/` — gap-over-time trend + streak + session/attempt counts.
+- exercise components now accept `onComplete` so they run standalone or inside the session.
 - 🚧 `/components/AppShell.tsx` — left rail + main + right panel; mobile bottom tab bar.
 - 🚧 `/components/VoiceTextInput.tsx` — text input always; mic button when speech supported (text fallback).
 - 🚧 `/components/ui/` — `Button` (variant brand/secondary/tertiary), `Card` (+`CardHeading`), `Input`, `GapBar`. (Badge/Tabs/Modal/ExerciseShell: later.)
@@ -130,6 +135,8 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 | 2 | Reactivation Warm-up (SRS cloze) | ✅ frozen (Ed concluded testing 2026-06-21; assessment made more transparent + conservative on speaking) |
 | 3 | Bridge Drills (★ unique IP) | ✅ frozen (Hear→Repeat→Mod→Mix→Make + stuck protocol; Ed approved continuing) |
 | 4 | Guided Conversation + corrections + recap | 🚧 built + self-tested (4 layers + typecheck green); pending Ed review |
-| 5 | Daily session orchestration + progress | ⬜ |
+| 5 | Daily session orchestration + progress | 🚧 built + self-tested (4 layers + typecheck green); pending Ed review |
 
-Post-MVP (not scheduled): voice polish · Absorber pathway · phonetics · Q&A · curriculum · analytics · deploy hardening.
+**MVP feature-complete** (all 6 iterations built): onboarding → dual-level gap → daily session of interleaved exercises (Reactivation · Bridge · Conversation) → recap + streak + progress. Full loop passes e2e in test mode.
+
+Post-MVP (not scheduled): voice polish (iOS Whisper) · Absorber pathway · phonetics · Q&A · curriculum · custom plans · analytics · payments · deploy hardening.

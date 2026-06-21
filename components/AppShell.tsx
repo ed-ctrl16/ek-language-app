@@ -2,7 +2,7 @@ import * as React from "react";
 
 const navItems: { label: string; href: string }[] = [
   { label: "Home", href: "/" },
-  { label: "Progress", href: "#" }, // Iteration 5
+  { label: "Progress", href: "/progress" },
   { label: "Settings", href: "/settings" },
 ];
 

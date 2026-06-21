@@ -69,6 +69,7 @@ export async function completeOnboarding(
     topics: payload.topics,
     correctionIntensity: "standard",
     streakCount: 0,
+    lastActiveDate: null,
     createdAt: now,
   });
 

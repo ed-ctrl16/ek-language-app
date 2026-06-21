@@ -35,9 +35,11 @@ const STEP_TITLES: Record<BridgeStep, string> = {
 export function BridgeDrillExercise({
   drill,
   mix,
+  onComplete,
 }: {
   drill: BridgeDrill;
   mix: MixStep;
+  onComplete?: () => void;
 }) {
   const [step, setStep] = React.useState<BridgeStep>("hear");
   const [answer, setAnswer] = React.useState("");
@@ -425,13 +427,23 @@ export function BridgeDrillExercise({
         <p className="mb-6 text-base text-brand">
           That&apos;s the whole point — Hear → Repeat → Mod → Mix → Make.
         </p>
-        <Link
-          href="/"
-          data-testid="bridge-back"
-          className="text-base font-bold uppercase text-brand underline"
-        >
-          Back to dashboard
-        </Link>
+        {onComplete ? (
+          <Button
+            variant="secondary"
+            data-testid="bridge-continue"
+            onClick={onComplete}
+          >
+            Continue
+          </Button>
+        ) : (
+          <Link
+            href="/"
+            data-testid="bridge-back"
+            className="text-base font-bold uppercase text-brand underline"
+          >
+            Back to dashboard
+          </Link>
+        )}
       </Card>
     </Shell>
   );

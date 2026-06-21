@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
-import { Button } from "@/components/ui/Button";
 import { Card, CardHeading } from "@/components/ui/Card";
 import { GapBar } from "@/components/ui/GapBar";
 import { computeGap, toBandLabel } from "@/lib/levels/cefr";
@@ -66,11 +65,17 @@ export default async function DashboardPage() {
         <Card>
           <CardHeading>Today&apos;s session</CardHeading>
           <p className="mb-6 text-lg text-brand">
-            The full daily session — a few varied exercises in ~17 minutes —
-            arrives in Iteration 5. For now, try a reactivation warm-up.
+            A short, varied set of exercises — about 15 minutes. Or jump straight
+            to a single exercise.
           </p>
           <div className="flex flex-wrap items-center gap-4">
-            <Button disabled>Full session (Iteration 5)</Button>
+            <Link
+              href="/session"
+              data-testid="session-link"
+              className="inline-flex rounded bg-brand-secondary px-8 py-3 text-xl font-bold uppercase text-brand shadow-hard-sm transition-[box-shadow] duration-500 [transform:skewX(-15deg)] hover:shadow-hard-lg"
+            >
+              <span className="[transform:skewX(15deg)]">Start session</span>
+            </Link>
             <Link
               href="/warmup"
               data-testid="warmup-link"

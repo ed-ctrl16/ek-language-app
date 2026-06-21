@@ -21,6 +21,7 @@ export interface HablaUser {
   topics: string[];
   correctionIntensity: "minimal" | "standard" | "detailed";
   streakCount: number;
+  lastActiveDate: string | null; // YYYY-MM-DD of last completed session
   createdAt: string;
 }
 
@@ -50,11 +51,24 @@ export interface Attempt {
   createdAt: string;
 }
 
+export interface Session {
+  id: string;
+  userId: string;
+  exerciseBlocks: string[];
+  durationSeconds: number | null;
+  completed: boolean;
+  createdAt: string;
+}
+
 export interface Store {
   getUser(id: string): Promise<HablaUser | null>;
   saveUser(user: HablaUser): Promise<void>;
   saveAssessment(assessment: Assessment): Promise<void>;
   listAssessments(userId: string): Promise<Assessment[]>;
+
+  // Daily sessions
+  saveSession(session: Session): Promise<void>;
+  listSessions(userId: string): Promise<Session[]>;
 
   // Practice items (SRS bank)
   listItems(userId: string): Promise<PracticeItem[]>;

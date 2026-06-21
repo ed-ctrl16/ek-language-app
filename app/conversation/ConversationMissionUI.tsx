@@ -16,8 +16,10 @@ import { converseTurnAction, finishConversationAction } from "./actions";
 
 export function ConversationMissionUI({
   mission,
+  onComplete,
 }: {
   mission: ConversationMission;
+  onComplete?: () => void;
 }) {
   const [turns, setTurns] = React.useState<ConversationTurn[]>([
     { role: "assistant", text: mission.opener },
@@ -100,13 +102,23 @@ export function ConversationMissionUI({
             <strong>Tomorrow:</strong> {recap.patternToReview} — added to your
             queue.
           </p>
-          <Link
-            href="/"
-            data-testid="conv-recap"
-            className="text-base font-bold uppercase text-brand underline"
-          >
-            Back to dashboard
-          </Link>
+          {onComplete ? (
+            <Button
+              variant="secondary"
+              data-testid="conv-continue"
+              onClick={onComplete}
+            >
+              Continue
+            </Button>
+          ) : (
+            <Link
+              href="/"
+              data-testid="conv-recap"
+              className="text-base font-bold uppercase text-brand underline"
+            >
+              Back to dashboard
+            </Link>
+          )}
         </Card>
       </Shell>
     );

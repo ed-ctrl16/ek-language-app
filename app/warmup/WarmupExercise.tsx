@@ -15,17 +15,27 @@ export interface WarmupItem {
   level: string;
 }
 
-const backLink = (
-  <Link
-    href="/"
-    data-testid="warmup-back"
-    className="text-base font-bold uppercase text-brand underline"
-  >
-    Back to dashboard
-  </Link>
-);
+export function WarmupExercise({
+  items,
+  onComplete,
+}: {
+  items: WarmupItem[];
+  onComplete?: () => void;
+}) {
+  const endControl = onComplete ? (
+    <Button variant="secondary" data-testid="warmup-continue" onClick={onComplete}>
+      Continue
+    </Button>
+  ) : (
+    <Link
+      href="/"
+      data-testid="warmup-back"
+      className="text-base font-bold uppercase text-brand underline"
+    >
+      Back to dashboard
+    </Link>
+  );
 
-export function WarmupExercise({ items }: { items: WarmupItem[] }) {
   const [index, setIndex] = React.useState(0);
   const [answer, setAnswer] = React.useState("");
   const [revealed, setRevealed] = React.useState(false);
@@ -41,7 +51,7 @@ export function WarmupExercise({ items }: { items: WarmupItem[] }) {
           <p className="mb-6 text-lg text-brand">
             You&apos;re all caught up — come back later for the next batch.
           </p>
-          {backLink}
+          {endControl}
         </Card>
       </Shell>
     );
@@ -108,7 +118,7 @@ export function WarmupExercise({ items }: { items: WarmupItem[] }) {
           <p className="mb-6 text-base text-brand">
             Short and often beats long and rare — see you tomorrow.
           </p>
-          {backLink}
+          {endControl}
         </Card>
       </Shell>
     );
