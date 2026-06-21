@@ -5,6 +5,8 @@ import { getAIClient } from "@/lib/ai";
 import { assessReturner, cefrEnum } from "@/lib/levels/assess";
 import { getStore } from "@/lib/store";
 import { setCurrentUserId } from "@/lib/session/currentUser";
+import { getServerSupabase, isSupabaseConfigured } from "@/lib/db/supabase";
+import { isTestMode } from "@/lib/testkit/testMode";
 
 // Validate at the boundary — onboarding input crosses from client to server.
 const payloadSchema = z.object({
@@ -53,7 +55,18 @@ export async function completeOnboarding(
   });
 
   const store = await getStore();
-  const userId = crypto.randomUUID();
+
+  // Real mode: the profile row is keyed by the logged-in Supabase user id.
+  // Cookie mode (test / local dev): mint an id and remember it in a cookie.
+  const cookieMode = isTestMode() || !isSupabaseConfigured();
+  let userId: string;
+  if (cookieMode) {
+    userId = crypto.randomUUID();
+  } else {
+    const { data } = await getServerSupabase().auth.getUser();
+    if (!data.user) throw new Error("Not authenticated — please log in first.");
+    userId = data.user.id;
+  }
   const now = new Date().toISOString(); // edge: real time is fine here
 
   await store.saveUser({
@@ -83,6 +96,6 @@ export async function completeOnboarding(
     createdAt: now,
   });
 
-  setCurrentUserId(userId);
+  if (cookieMode) setCurrentUserId(userId);
   return { ok: true };
 }

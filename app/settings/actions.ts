@@ -13,7 +13,7 @@ export async function setCorrectionIntensity(
   raw: z.infer<typeof input>,
 ): Promise<{ ok: boolean }> {
   const { correctionIntensity } = input.parse(raw);
-  const userId = getCurrentUserId();
+  const userId = await getCurrentUserId();
   if (!userId) return { ok: false };
 
   const store = await getStore();

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getCurrentUserId } from "@/lib/session/currentUser";
+import { getCurrentUserId, authRedirectPath } from "@/lib/session/currentUser";
 import { getStore } from "@/lib/store";
 import { getAIClient } from "@/lib/ai";
 import { SeededRandom } from "@/lib/random/Random";
@@ -22,8 +22,8 @@ import { SessionPlayer } from "./SessionPlayer";
  * SessionPlayer which runs them in sequence and rolls the streak at the end.
  */
 export default async function SessionPage() {
-  const userId = getCurrentUserId();
-  if (!userId) redirect("/onboarding");
+  const userId = await getCurrentUserId();
+  if (!userId) redirect(authRedirectPath());
   const store = await getStore();
   const user = await store.getUser(userId);
   if (!user) redirect("/onboarding");

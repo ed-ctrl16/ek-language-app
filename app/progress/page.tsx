@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Card, CardHeading } from "@/components/ui/Card";
-import { getCurrentUserId } from "@/lib/session/currentUser";
+import { getCurrentUserId, authRedirectPath } from "@/lib/session/currentUser";
 import { getStore } from "@/lib/store";
 import { gapOverTime } from "@/lib/levels/gapSeries";
 
@@ -10,8 +10,8 @@ import { gapOverTime } from "@/lib/levels/gapSeries";
  * how many sessions/attempts the user has logged. Read-only.
  */
 export default async function ProgressPage() {
-  const userId = getCurrentUserId();
-  if (!userId) redirect("/onboarding");
+  const userId = await getCurrentUserId();
+  if (!userId) redirect(authRedirectPath());
   const store = await getStore();
   const user = await store.getUser(userId);
   if (!user) redirect("/onboarding");

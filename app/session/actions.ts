@@ -15,7 +15,7 @@ export async function completeSessionAction(
   raw: z.infer<typeof input>,
 ): Promise<{ streak: number }> {
   const { blocks } = input.parse(raw);
-  const userId = getCurrentUserId();
+  const userId = await getCurrentUserId();
   if (!userId) return { streak: 0 };
 
   const store = await getStore();

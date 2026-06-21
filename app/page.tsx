@@ -4,7 +4,7 @@ import { AppShell } from "@/components/AppShell";
 import { Card, CardHeading } from "@/components/ui/Card";
 import { GapBar } from "@/components/ui/GapBar";
 import { computeGap, toBandLabel } from "@/lib/levels/cefr";
-import { getCurrentUserId } from "@/lib/session/currentUser";
+import { getCurrentUserId, authRedirectPath } from "@/lib/session/currentUser";
 import { getStore } from "@/lib/store";
 import { isTestMode } from "@/lib/testkit/testMode";
 
@@ -14,8 +14,8 @@ import { isTestMode } from "@/lib/testkit/testMode";
  * The session CTA stays a disabled stub until Iteration 5.
  */
 export default async function DashboardPage() {
-  const userId = getCurrentUserId();
-  if (!userId) redirect("/onboarding");
+  const userId = await getCurrentUserId();
+  if (!userId) redirect(authRedirectPath());
 
   const store = await getStore();
   const user = await store.getUser(userId);

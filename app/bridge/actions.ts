@@ -36,7 +36,7 @@ export async function recordBridgeAttempt(
   raw: z.infer<typeof attemptInput>,
 ): Promise<{ ok: boolean }> {
   const input = attemptInput.parse(raw);
-  const userId = getCurrentUserId();
+  const userId = await getCurrentUserId();
   if (!userId) return { ok: false };
 
   const store = await getStore();

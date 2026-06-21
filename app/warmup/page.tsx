@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getCurrentUserId } from "@/lib/session/currentUser";
+import { getCurrentUserId, authRedirectPath } from "@/lib/session/currentUser";
 import { getStore } from "@/lib/store";
 import { seedItemsForPeak } from "@/lib/srs/seedBank";
 import { buildWarmupBlock } from "@/lib/exercises/reactivation/warmup";
@@ -11,8 +11,8 @@ import { WarmupExercise } from "./WarmupExercise";
  * on first visit (idempotent), then serves a due block.
  */
 export default async function WarmupPage() {
-  const userId = getCurrentUserId();
-  if (!userId) redirect("/onboarding");
+  const userId = await getCurrentUserId();
+  if (!userId) redirect(authRedirectPath());
 
   const store = await getStore();
   const user = await store.getUser(userId);

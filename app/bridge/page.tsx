@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getCurrentUserId } from "@/lib/session/currentUser";
+import { getCurrentUserId, authRedirectPath } from "@/lib/session/currentUser";
 import { getStore } from "@/lib/store";
 import { getAIClient } from "@/lib/ai";
 import { generateBridgeDrill } from "@/lib/exercises/bridge/generate";
@@ -14,8 +14,8 @@ import { BridgeDrillExercise } from "./BridgeDrillExercise";
  * under MockAIClient in test mode).
  */
 export default async function BridgePage() {
-  const userId = getCurrentUserId();
-  if (!userId) redirect("/onboarding");
+  const userId = await getCurrentUserId();
+  if (!userId) redirect(authRedirectPath());
 
   const store = await getStore();
   const user = await store.getUser(userId);

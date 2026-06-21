@@ -6,11 +6,20 @@ const PORT = 3100;
 // driving every "spoken" turn through the text-fallback path — no microphone.
 export default defineConfig({
   testDir: "./e2e",
-  fullyParallel: true,
+  // One dev server compiles routes lazily; parallel workers thrash it and cause
+  // flaky first-hit timeouts. Run serially for deterministic results.
+  fullyParallel: false,
+  workers: 1,
   reporter: "list",
   outputDir: "./e2e/.results",
+  // Next dev compiles routes (and server actions) lazily on first hit, which can
+  // take several seconds cold — generous timeouts keep that from flaking.
+  timeout: 60_000,
+  expect: { timeout: 15_000 },
   use: {
     baseURL: `http://localhost:${PORT}`,
+    actionTimeout: 15_000,
+    navigationTimeout: 30_000,
     trace: "off",
   },
   projects: [

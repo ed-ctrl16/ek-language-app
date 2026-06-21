@@ -1,15 +1,23 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+type CookieToSet = { name: string; value: string; options: CookieOptions };
 
 /**
- * Supabase client (single-user simplified for the MVP). Constructed lazily so
- * the app boots without credentials in test mode. Queries should still scope
- * by user_id even in single-user mode so multi-user is a config change later.
+ * Cookie-aware Supabase server client (App Router). Carries the logged-in
+ * user's session, so RLS policies (auth.uid() = user_id) apply automatically.
+ * Constructed per request. Test mode / local dev without Supabase use the
+ * in-memory store instead and never call this.
  */
-let cached: SupabaseClient | null = null;
+export function isSupabaseConfigured(): boolean {
+  return (
+    !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+}
 
-export function getSupabase(): SupabaseClient {
-  if (cached) return cached;
-
+export function getServerSupabase(): SupabaseClient {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !anonKey) {
@@ -18,6 +26,23 @@ export function getSupabase(): SupabaseClient {
     );
   }
 
-  cached = createClient(url, anonKey);
-  return cached;
+  const cookieStore = cookies();
+  return createServerClient(url, anonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(cookiesToSet: CookieToSet[]) {
+        // Throws in a Server Component (read-only cookies) — the middleware
+        // handles session refresh, so swallowing here is the documented pattern.
+        try {
+          for (const { name, value, options } of cookiesToSet) {
+            cookieStore.set(name, value, options);
+          }
+        } catch {
+          /* no-op in server components */
+        }
+      },
+    },
+  });
 }

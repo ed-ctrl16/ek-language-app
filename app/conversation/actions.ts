@@ -27,7 +27,7 @@ export async function converseTurnAction(
   raw: z.infer<typeof turnInput>,
 ): Promise<ConversationTurnResult> {
   const input = turnInput.parse(raw);
-  const userId = getCurrentUserId();
+  const userId = await getCurrentUserId();
   const store = await getStore();
   const user = userId ? await store.getUser(userId) : null;
   const intensity = user?.correctionIntensity ?? "standard";
@@ -53,7 +53,7 @@ export async function finishConversationAction(
   raw: z.infer<typeof finishInput>,
 ): Promise<ConversationRecap> {
   const input = finishInput.parse(raw);
-  const userId = getCurrentUserId();
+  const userId = await getCurrentUserId();
   const store = await getStore();
   const user = userId ? await store.getUser(userId) : null;
   const intensity = user?.correctionIntensity ?? "standard";

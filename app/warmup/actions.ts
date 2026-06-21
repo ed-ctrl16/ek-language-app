@@ -23,7 +23,7 @@ export async function recordWarmupAttempt(
   raw: WarmupAttemptInput,
 ): Promise<{ ok: boolean }> {
   const input = inputSchema.parse(raw);
-  const userId = getCurrentUserId();
+  const userId = await getCurrentUserId();
   if (!userId) return { ok: false };
 
   const store = await getStore();

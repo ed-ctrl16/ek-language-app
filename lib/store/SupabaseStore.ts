@@ -1,4 +1,4 @@
-import { getSupabase } from "@/lib/db/supabase";
+import { getServerSupabase } from "@/lib/db/supabase";
 import type {
   Assessment,
   Attempt,
@@ -61,7 +61,7 @@ function itemToRow(item: PracticeItem) {
  */
 export class SupabaseStore implements Store {
   async getUser(id: string): Promise<HablaUser | null> {
-    const { data, error } = await getSupabase()
+    const { data, error } = await getServerSupabase()
       .from("users")
       .select("*")
       .eq("id", id)
@@ -87,7 +87,7 @@ export class SupabaseStore implements Store {
   }
 
   async saveUser(user: HablaUser): Promise<void> {
-    const { error } = await getSupabase().from("users").upsert({
+    const { error } = await getServerSupabase().from("users").upsert({
       id: user.id,
       pathway: user.pathway,
       receptive_level: user.receptiveLevel,
@@ -106,7 +106,7 @@ export class SupabaseStore implements Store {
   }
 
   async saveAssessment(a: Assessment): Promise<void> {
-    const { error } = await getSupabase().from("assessments").insert({
+    const { error } = await getServerSupabase().from("assessments").insert({
       id: a.id,
       user_id: a.userId,
       pathway: "returner",
@@ -120,7 +120,7 @@ export class SupabaseStore implements Store {
   }
 
   async listAssessments(userId: string): Promise<Assessment[]> {
-    const { data, error } = await getSupabase()
+    const { data, error } = await getServerSupabase()
       .from("assessments")
       .select("*")
       .eq("user_id", userId)
@@ -138,7 +138,7 @@ export class SupabaseStore implements Store {
   }
 
   async listItems(userId: string): Promise<PracticeItem[]> {
-    const { data, error } = await getSupabase()
+    const { data, error } = await getServerSupabase()
       .from("practice_items")
       .select("*")
       .eq("user_id", userId);
@@ -148,21 +148,21 @@ export class SupabaseStore implements Store {
 
   async saveItems(items: PracticeItem[]): Promise<void> {
     if (items.length === 0) return;
-    const { error } = await getSupabase()
+    const { error } = await getServerSupabase()
       .from("practice_items")
       .upsert(items.map(itemToRow));
     if (error) throw error;
   }
 
   async updateItem(item: PracticeItem): Promise<void> {
-    const { error } = await getSupabase()
+    const { error } = await getServerSupabase()
       .from("practice_items")
       .upsert(itemToRow(item));
     if (error) throw error;
   }
 
   async saveAttempt(a: Attempt): Promise<void> {
-    const { error } = await getSupabase().from("attempts").insert({
+    const { error } = await getServerSupabase().from("attempts").insert({
       id: a.id,
       user_id: a.userId,
       session_id: a.sessionId,
@@ -179,7 +179,7 @@ export class SupabaseStore implements Store {
   }
 
   async saveSession(s: Session): Promise<void> {
-    const { error } = await getSupabase().from("sessions").insert({
+    const { error } = await getServerSupabase().from("sessions").insert({
       id: s.id,
       user_id: s.userId,
       exercise_blocks: s.exerciseBlocks,
@@ -190,7 +190,7 @@ export class SupabaseStore implements Store {
   }
 
   async listSessions(userId: string): Promise<Session[]> {
-    const { data, error } = await getSupabase()
+    const { data, error } = await getServerSupabase()
       .from("sessions")
       .select("*")
       .eq("user_id", userId)
@@ -209,7 +209,7 @@ export class SupabaseStore implements Store {
   }
 
   async listAttempts(userId: string): Promise<Attempt[]> {
-    const { data, error } = await getSupabase()
+    const { data, error } = await getServerSupabase()
       .from("attempts")
       .select("*")
       .eq("user_id", userId)
