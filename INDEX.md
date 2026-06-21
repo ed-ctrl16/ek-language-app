@@ -55,9 +55,10 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 - ✅ `/lib/srs/types.ts` — `PracticeItem`, `SrsState`.
 - ✅ `/lib/exercises/reactivation/warmup.ts` — `buildWarmupBlock` (due-first, never empty). Unit + integration-tested.
 
-### Bridge Drills (Iteration 3, ★ unique IP) — built + self-tested
+### Bridge Drills (Iteration 3, ★ unique IP) — ✅ frozen
 - 🚧 `/lib/exercises/bridge/types.ts` — `BridgeDrill`, `BridgeStep`, `MakeAssessment`.
-- 🚧 `/lib/exercises/bridge/steps.ts` — pure step machine (Hear→Repeat→Mod→Make→done). Unit-tested.
+- 🚧 `/lib/exercises/bridge/steps.ts` — pure step machine (Hear→Repeat→Mod→**Mix**→Make→done). Unit-tested.
+- 🚧 `/lib/exercises/bridge/mix.ts` — `buildMix` (deterministic chunk scramble) + `isMixCorrect`. Unit-tested.
 - 🚧 `/lib/exercises/bridge/stuck.ts` — the stuck-protocol ladder (wait→first-word→choices→model→change-one-word→flag). Unit-tested.
 - 🚧 `/lib/exercises/bridge/generate.ts` — `generateBridgeDrill` + `assessMake` via AI seam (zod-validated). Integration-tested.
 - 🚧 `/lib/exercises/bridge/patterns.ts` — bridge-able patterns by level (`patternForLevel`).
@@ -121,8 +122,8 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 | 0 | Foundation & test harness | ✅ frozen (Ed signed off 2026-06-21) |
 | 1 | Onboarding + dual-level + dashboard gap | ✅ frozen (Ed signed off 2026-06-21; voice verified in Chrome) |
 | 2 | Reactivation Warm-up (SRS cloze) | ✅ frozen (Ed concluded testing 2026-06-21; assessment made more transparent + conservative on speaking) |
-| 3 | Bridge Drills (★ unique IP) | 🚧 built + self-tested (4 layers + typecheck green); pending Ed review · "Mix it" step decision open |
-| 4 | Guided Conversation + corrections + recap | ⬜ |
+| 3 | Bridge Drills (★ unique IP) | ✅ frozen (Hear→Repeat→Mod→Mix→Make + stuck protocol; Ed approved continuing) |
+| 4 | Guided Conversation + corrections + recap | 🚧 in progress |
 | 5 | Daily session orchestration + progress | ⬜ |
 
 Post-MVP (not scheduled): voice polish · Absorber pathway · phonetics · Q&A · curriculum · analytics · deploy hardening.

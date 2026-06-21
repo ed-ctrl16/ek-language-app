@@ -7,6 +7,7 @@ import { Card, CardHeading } from "@/components/ui/Card";
 import { VoiceTextInput } from "@/components/VoiceTextInput";
 import { WebVoiceClient } from "@/lib/voice/WebVoiceClient";
 import { matchesCloze, matchesRepeat } from "@/lib/srs/matcher";
+import { isMixCorrect, type MixStep } from "@/lib/exercises/bridge/mix";
 import { nextStep } from "@/lib/exercises/bridge/steps";
 import {
   escalate,
@@ -26,11 +27,18 @@ const STEP_TITLES: Record<BridgeStep, string> = {
   hear: "Hear it",
   repeat: "Repeat it",
   mod: "Mod it",
+  mix: "Mix it",
   make: "Make it",
   done: "Done",
 };
 
-export function BridgeDrillExercise({ drill }: { drill: BridgeDrill }) {
+export function BridgeDrillExercise({
+  drill,
+  mix,
+}: {
+  drill: BridgeDrill;
+  mix: MixStep;
+}) {
   const [step, setStep] = React.useState<BridgeStep>("hear");
   const [answer, setAnswer] = React.useState("");
   const [revealed, setRevealed] = React.useState(false);
@@ -39,6 +47,7 @@ export function BridgeDrillExercise({ drill }: { drill: BridgeDrill }) {
   const [flagged, setFlagged] = React.useState(false);
   const [verdict, setVerdict] = React.useState<MakeAssessment | null>(null);
   const [busy, setBusy] = React.useState(false);
+  const [assembled, setAssembled] = React.useState<number[]>([]); // chunk indices, in order
   const [voice] = React.useState(() => new WebVoiceClient());
 
   function goto(next: BridgeStep) {
@@ -48,6 +57,7 @@ export function BridgeDrillExercise({ drill }: { drill: BridgeDrill }) {
     setCorrect(false);
     setStuckLevel(-1);
     setVerdict(null);
+    setAssembled([]);
   }
 
   function hint() {
@@ -59,7 +69,12 @@ export function BridgeDrillExercise({ drill }: { drill: BridgeDrill }) {
   }
 
   // Hint content for the current production step.
-  const hintTarget = step === "mod" ? drill.mod.target : drill.make.modelAnswer;
+  const hintTarget =
+    step === "mod"
+      ? drill.mod.target
+      : step === "mix"
+        ? mix.answer
+        : drill.make.modelAnswer;
   const hintDistractor = step === "mod" ? drill.mod.distractor : "";
 
   function renderHint() {
@@ -244,6 +259,81 @@ export function BridgeDrillExercise({ drill }: { drill: BridgeDrill }) {
     );
   }
 
+  if (step === "mix") {
+    const assembledWords = assembled.map((i) => mix.chunks[i]!);
+    const mixOk = isMixCorrect(assembledWords, mix.answer);
+    return (
+      <Shell step="mix">
+        <Card>
+          <CardHeading>Mix it</CardHeading>
+          <p className="mb-2 text-base text-brand opacity-70">
+            Tap the words in order to build a sentence with this pattern.
+          </p>
+
+          <div
+            data-testid="mix-assembled"
+            className="mb-4 min-h-[3.5rem] rounded border-4 border-ink bg-brand-secondary px-5 py-4 text-xl text-brand"
+          >
+            {assembledWords.join(" ") || (
+              <span className="opacity-40">…</span>
+            )}
+          </div>
+
+          <div className="mb-2 flex flex-wrap gap-3">
+            {mix.chunks.map((chunk, i) => (
+              <button
+                key={`${chunk}-${i}`}
+                disabled={assembled.includes(i)}
+                onClick={() => setAssembled((a) => [...a, i])}
+                className="rounded border-4 border-ink bg-brand-secondary px-4 py-2 text-lg font-bold text-brand shadow-hard-xs disabled:opacity-30"
+              >
+                {chunk}
+              </button>
+            ))}
+          </div>
+
+          <button
+            data-testid="mix-clear"
+            onClick={() => setAssembled([])}
+            className="mb-6 text-sm font-bold uppercase text-brand underline"
+          >
+            Clear
+          </button>
+
+          <div className="flex flex-wrap gap-4">
+            <Button
+              variant="secondary"
+              data-testid="bridge-check"
+              disabled={assembled.length === 0}
+              onClick={() => {
+                setCorrect(mixOk);
+                setRevealed(true);
+              }}
+            >
+              Check
+            </Button>
+            {hintButton}
+            {(revealed && correct) || flagged ? (
+              <Button
+                variant="secondary"
+                data-testid="bridge-next"
+                onClick={() => goto(nextStep("mix"))}
+              >
+                Next
+              </Button>
+            ) : null}
+          </div>
+          {revealed ? (
+            <p className="mt-4 text-lg text-brand">
+              {correct ? "¡Correcto!" : "Not in order yet — Clear and try again."}
+            </p>
+          ) : null}
+          {renderHint()}
+        </Card>
+      </Shell>
+    );
+  }
+
   if (step === "make") {
     return (
       <Shell step="make">
@@ -333,7 +423,7 @@ export function BridgeDrillExercise({ drill }: { drill: BridgeDrill }) {
           You turned a phrase you understood into one you can say.
         </p>
         <p className="mb-6 text-base text-brand">
-          That&apos;s the whole point — Hear → Repeat → Mod → Make.
+          That&apos;s the whole point — Hear → Repeat → Mod → Mix → Make.
         </p>
         <Link
           href="/"
@@ -363,7 +453,7 @@ function Shell({
         data-testid="bridge-step"
         className="mb-8 text-sm font-semibold uppercase text-body-subtle"
       >
-        Hear → Repeat → Mod → Make · {STEP_TITLES[step]}
+        Hear → Repeat → Mod → Mix → Make · {STEP_TITLES[step]}
       </p>
       {children}
     </div>

@@ -19,7 +19,13 @@ export interface BridgeDrill {
   make: { prompt: string; modelAnswer: string };
 }
 
-export type BridgeStep = "hear" | "repeat" | "mod" | "make" | "done";
+export type BridgeStep =
+  | "hear"
+  | "repeat"
+  | "mod"
+  | "mix"
+  | "make"
+  | "done";
 
 export interface MakeAssessment {
   /** Did the user produce a usable sentence with the pattern? */

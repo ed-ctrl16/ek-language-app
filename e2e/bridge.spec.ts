@@ -41,6 +41,18 @@ test("complete a bridge drill, using the stuck protocol", async ({ page }) => {
   await expect(page.getByText("¡Correcto!")).toBeVisible();
   await page.getByTestId("bridge-next").click();
 
+  // Mix it — assemble the model sentence from scrambled chunks, in order.
+  for (const word of ["Cuando", "era", "niño,", "vivía", "en", "Bristol."]) {
+    await page.getByRole("button", { name: word, exact: true }).click();
+  }
+  await page.screenshot({
+    path: "e2e/__screenshots__/bridge-mix.png",
+    fullPage: true,
+  });
+  await page.getByTestId("bridge-check").click();
+  await expect(page.getByText("¡Correcto!")).toBeVisible();
+  await page.getByTestId("bridge-next").click();
+
   // Make it — open production assessed by the AI seam.
   await page.fill("#bridge-answer", "Cuando era niño vivía cerca del mar");
   await page.getByTestId("bridge-submit").click();

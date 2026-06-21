@@ -1,15 +1,17 @@
 import { describe, it, expect } from "vitest";
 import { MockAIClient } from "@/lib/ai/MockAIClient";
 import { AI_FIXTURES } from "@/lib/testkit/fixtures";
+import { SeededRandom } from "@/lib/random/Random";
 import { matchesCloze, matchesRepeat } from "@/lib/srs/matcher";
 import { generateBridgeDrill, assessMake } from "./generate";
+import { buildMix, isMixCorrect } from "./mix";
 import { nextStep } from "./steps";
 import { escalate, isMaxRung, rungAt } from "./stuck";
 
 const ai = new MockAIClient(AI_FIXTURES);
 
 describe("bridge drill — full flow (mocked AI)", () => {
-  it("generates a four-step drill and walks Hear → Repeat → Mod → Make", async () => {
+  it("generates a drill and walks Hear → Repeat → Mod → Mix → Make", async () => {
     const drill = await generateBridgeDrill(ai, {
       pattern: "imperfect for habitual past",
       level: "B1",
@@ -26,7 +28,13 @@ describe("bridge drill — full flow (mocked AI)", () => {
     expect(step).toBe("mod");
     expect(matchesCloze(drill.mod.target, "vivia")).toBe(true); // accent forgiven
 
-    // Mod → Make, assessed by the AI seam.
+    // Mod → Mix: reassemble the model sentence from scrambled chunks.
+    step = nextStep(step);
+    expect(step).toBe("mix");
+    const mix = buildMix(drill.make.modelAnswer, new SeededRandom(7));
+    expect(isMixCorrect(drill.make.modelAnswer.split(/\s+/), mix.answer)).toBe(true);
+
+    // Mix → Make, assessed by the AI seam.
     step = nextStep(step);
     expect(step).toBe("make");
     const verdict = await assessMake(ai, {

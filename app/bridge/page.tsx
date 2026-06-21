@@ -4,6 +4,8 @@ import { getStore } from "@/lib/store";
 import { getAIClient } from "@/lib/ai";
 import { generateBridgeDrill } from "@/lib/exercises/bridge/generate";
 import { patternForLevel } from "@/lib/exercises/bridge/patterns";
+import { buildMix, seedFromString } from "@/lib/exercises/bridge/mix";
+import { SeededRandom } from "@/lib/random/Random";
 import { BridgeDrillExercise } from "./BridgeDrillExercise";
 
 /**
@@ -23,5 +25,11 @@ export default async function BridgePage() {
   const ai = await getAIClient();
   const drill = await generateBridgeDrill(ai, { pattern, level });
 
-  return <BridgeDrillExercise drill={drill} />;
+  // Derive the "Mix it" scramble deterministically from the model sentence.
+  const mix = buildMix(
+    drill.make.modelAnswer,
+    new SeededRandom(seedFromString(drill.make.modelAnswer)),
+  );
+
+  return <BridgeDrillExercise drill={drill} mix={mix} />;
 }
