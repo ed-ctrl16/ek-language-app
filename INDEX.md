@@ -34,17 +34,18 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 - ✅ `/lib/random/Random.ts` — `SystemRandom` + seeded `SeededRandom` mulberry32 (unit-tested).
 - ✅ `/lib/testkit/` — `testMode.ts` (`HABLA_TEST_MODE`/`?test=1`), `seed.ts` (Returner profile + items), `fixtures.ts`.
 
-### Levels & assessment (Iteration 1) — built + self-tested
-- 🚧 `/lib/levels/cefr.ts` — levels, `computeGap`, `levelPercent`, `toBandLabel` (confidence framing). Unit-tested.
-- 🚧 `/lib/levels/assess.ts` — `assessReturner(ai, input)` → validated `LevelEstimate` (zod); `cefrEnum`. Integration-tested.
-- 🚧 `/lib/onboarding/content.ts` — static diagnostic/goal/topic content + first-win opener.
+### Levels & assessment (Iteration 1) — ✅ frozen
+- ✅ `/lib/levels/cefr.ts` — levels, `computeGap`, `levelPercent`, `toBandLabel` (confidence framing). Unit-tested.
+- ✅ `/lib/levels/assess.ts` — `assessReturner(ai, input)` → validated `LevelEstimate` (zod); `cefrEnum`. Integration-tested.
+- ✅ `/lib/onboarding/content.ts` — static diagnostic/goal/topic content + first-win opener.
 
-### Persistence seam (Iteration 1) — built + self-tested
-- 🚧 `/lib/store/Store.ts` — `Store` interface + `HablaUser`/`Assessment` types.
-- 🚧 `/lib/store/InMemoryStore.ts` — default (test mode + Supabase-less local dev). Integration-tested.
-- 🚧 `/lib/store/SupabaseStore.ts` — used when Supabase env is set (maps to snake_case schema).
-- 🚧 `/lib/store/index.ts` — `getStore()`; in-memory singleton pinned on `globalThis` (shared across action/page bundles).
-- 🚧 `/lib/session/currentUser.ts` — single-user cookie identity (`getCurrentUserId` / `setCurrentUserId`).
+### Persistence seam (Iteration 1) — ✅ frozen
+- ✅ `/lib/store/Store.ts` — `Store` interface + `HablaUser`/`Assessment` types.
+- ✅ `/lib/store/InMemoryStore.ts` — default (test mode + Supabase-less local dev). Integration-tested.
+- ✅ `/lib/store/SupabaseStore.ts` — used when Supabase env is set (maps to snake_case schema).
+- ✅ `/lib/store/index.ts` — `getStore()`; in-memory singleton pinned on `globalThis` (shared across action/page bundles).
+- ✅ `/lib/session/currentUser.ts` — single-user cookie identity (`getCurrentUserId` / `setCurrentUserId`).
+- ✅ `/lib/voice/*` — voice input surfaces live status + errors (verified working in Chrome). Full cross-browser stack: Iter 4.
 
 ### Pure logic (Iterations 2–5 — not yet built)
 - ⬜ `/lib/srs/scheduler.ts` — expanding intervals, dual recognition/production state, savings fast-forward.
@@ -100,8 +101,8 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 | # | Iteration | Status |
 |---|---|---|
 | 0 | Foundation & test harness | ✅ frozen (Ed signed off 2026-06-21) |
-| 1 | Onboarding + dual-level + dashboard gap | 🚧 built + self-tested (4 layers + typecheck green); pending Ed review |
-| 2 | Reactivation Warm-up (SRS cloze) | ⬜ |
+| 1 | Onboarding + dual-level + dashboard gap | ✅ frozen (Ed signed off 2026-06-21; voice verified in Chrome) |
+| 2 | Reactivation Warm-up (SRS cloze) | 🚧 in progress |
 | 3 | Bridge Drills (★ unique IP) | ⬜ |
 | 4 | Guided Conversation + corrections + recap | ⬜ |
 | 5 | Daily session orchestration + progress | ⬜ |
