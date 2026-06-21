@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Test artifacts
+coverage/
+/e2e/__screenshots__/
+playwright-report/
+test-results/
+
+# Build / cache
+*.tsbuildinfo
+.turbo/
+
+# OS / editor
+.DS_Store
+*.log
