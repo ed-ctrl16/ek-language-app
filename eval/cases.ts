@@ -80,4 +80,53 @@ export const EVAL_CASES: EvalCase[] = [
         : `note looks like overcorrection (${sentences.length} sentences): ${parsed.note}`;
     },
   },
+  {
+    name: "conversation turn: reply + at most one form-focused correction",
+    request: {
+      fixtureKey: "conversation:turn",
+      messages: [{ role: "user", content: "voy llegar tarde" }],
+    },
+    check: (text) => {
+      let parsed: {
+        reply?: string;
+        correction?: { original?: string; better?: string; note?: string } | null;
+      };
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        return `expected JSON, got: ${text}`;
+      }
+      if (!parsed.reply) return "missing reply";
+      if (parsed.correction) {
+        if (!parsed.correction.better || !parsed.correction.note) {
+          return "correction missing better/note";
+        }
+        // Overcorrection guard: a single short note.
+        const sentences = parsed.correction.note
+          .split(/[.!?]+/)
+          .filter((s) => s.trim());
+        if (sentences.length > 2) return "correction note overcorrects";
+      }
+      return null;
+    },
+  },
+  {
+    name: "conversation summary: a win flag, a strength, and one pattern",
+    request: {
+      fixtureKey: "conversation:summary",
+      messages: [{ role: "user", content: "transcript..." }],
+    },
+    check: (text) => {
+      let parsed: { win?: boolean; saidWell?: string; patternToReview?: string };
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        return `expected JSON, got: ${text}`;
+      }
+      if (typeof parsed.win !== "boolean") return "missing win";
+      if (!parsed.saidWell) return "missing saidWell";
+      if (!parsed.patternToReview) return "missing patternToReview";
+      return null;
+    },
+  },
 ];

@@ -1,6 +1,10 @@
 import * as React from "react";
 
-const navItems = ["Home", "Progress", "Settings"];
+const navItems: { label: string; href: string }[] = [
+  { label: "Home", href: "/" },
+  { label: "Progress", href: "#" }, // Iteration 5
+  { label: "Settings", href: "/settings" },
+];
 
 /**
  * App shell: left rail + main content + right context panel on desktop.
@@ -27,8 +31,8 @@ export function AppShell({
           </div>
           {navItems.map((item, i) => (
             <a
-              key={item}
-              href="#"
+              key={item.label}
+              href={item.href}
               aria-current={i === 0 ? "page" : undefined}
               className={
                 "rounded border-4 px-4 py-3 text-base font-bold uppercase transition-colors duration-200 " +
@@ -37,7 +41,7 @@ export function AppShell({
                   : "border-transparent text-heading hover:bg-brand-quaternary hover:text-ink")
               }
             >
-              {item}
+              {item.label}
             </a>
           ))}
         </nav>
@@ -58,15 +62,15 @@ export function AppShell({
       >
         {navItems.map((item, i) => (
           <a
-            key={item}
-            href="#"
+            key={item.label}
+            href={item.href}
             aria-current={i === 0 ? "page" : undefined}
             className={
               "flex-1 py-4 text-center text-sm font-bold uppercase " +
               (i === 0 ? "bg-brand text-brand-secondary" : "text-brand")
             }
           >
-            {item}
+            {item.label}
           </a>
         ))}
       </nav>

@@ -85,6 +85,13 @@ export default async function DashboardPage() {
             >
               <span className="[transform:skewX(15deg)]">Bridge drill</span>
             </Link>
+            <Link
+              href="/conversation"
+              data-testid="conversation-link"
+              className="inline-flex rounded bg-brand-tertiary px-8 py-3 text-xl font-bold uppercase text-brand-secondary shadow-hard-sm transition-[box-shadow] duration-500 [transform:skewX(-15deg)] hover:shadow-hard-lg"
+            >
+              <span className="[transform:skewX(15deg)]">Conversation</span>
+            </Link>
           </div>
         </Card>
       </div>

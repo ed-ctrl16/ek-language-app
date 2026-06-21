@@ -38,4 +38,19 @@ export const AI_FIXTURES: Record<string, string> = {
     recast: "Cuando era niño, vivía cerca del mar.",
     note: "Nice — imperfect (vivía) is exactly right for a habitual past.",
   }),
+
+  // Iteration 4 — Guided Conversation.
+  "conversation:turn": JSON.stringify({
+    reply: "Ah, no pasa nada. Entonces os espero un poco más, ¿vale?",
+    correction: {
+      original: "voy llegar tarde",
+      better: "voy a llegar tarde",
+      note: "‘ir a + infinitivo’ needs the ‘a’: voy a llegar.",
+    },
+  }),
+  "conversation:summary": JSON.stringify({
+    win: true,
+    saidWell: "You clearly explained you'd be late and gave a reason — that's the whole job.",
+    patternToReview: "running late + reason (voy a llegar tarde porque...)",
+  }),
 };

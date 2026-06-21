@@ -64,7 +64,13 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 - 🚧 `/lib/exercises/bridge/patterns.ts` — bridge-able patterns by level (`patternForLevel`).
 - 🚧 `/lib/srs/matcher.ts` extended: `matchesRepeat`/`sentenceMatchRatio` for the Repeat step. Unit-tested.
 
-### Pure logic (Iterations 4–5 — not yet built)
+### Guided Conversation (Iteration 4) — built + self-tested
+- 🚧 `/lib/exercises/conversation/types.ts` — mission, turn, correction, recap types.
+- 🚧 `/lib/exercises/conversation/recap.ts` — turn cap (≤6) + correction caps by intensity (minimal 1 / standard 3 / detailed 5). Unit-tested.
+- 🚧 `/lib/exercises/conversation/missions.ts` — seeded scenario missions; `pickMission`. Unit-tested.
+- 🚧 `/lib/exercises/conversation/converse.ts` — `converseTurn` (reply + capped correction) + `summarizeConversation` via AI seam (zod). Integration-tested.
+
+### Pure logic (Iteration 5 — not yet built)
 - ⬜ `/lib/srs/interleaver.ts` — no two same exercise types adjacent.
 - ⬜ `/lib/session/orchestrator.ts` — pick 3 blocks + recap, time-budget to ~17 min.
 - ⬜ `/lib/session/registry.ts` — Exercise registry.
@@ -80,10 +86,10 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 - 🚧 `/app/page.tsx` — dashboard: stored gap + bands + observed-gaps transparency ("What we noticed") + recalibrate note; "Start warm-up" links to /warmup (full session = Iter 5 stub).
 - 🚧 `/app/onboarding/` — niche → background → diagnostic → goals → first win; `OnboardingWizard.tsx` (client) + `actions.ts` (`completeOnboarding`, `getFirstWinReply`).
 - 🚧 `/app/warmup/` — Reactivation Warm-up: `page.tsx` (seeds + serves a due block) + `WarmupExercise.tsx` (client) + `actions.ts` (`recordWarmupAttempt`).
-- 🚧 `/app/bridge/` — Bridge Drill: `page.tsx` (picks pattern + generates drill) + `BridgeDrillExercise.tsx` (client, 4 steps + stuck ladder) + `actions.ts` (`assessMakeAction`, `recordBridgeAttempt`).
+- 🚧 `/app/bridge/` — Bridge Drill: `page.tsx` + `BridgeDrillExercise.tsx` (5 steps + stuck ladder) + `actions.ts`.
+- 🚧 `/app/conversation/` — Guided mission: `page.tsx` (`pickMission`) + `ConversationMissionUI.tsx` (chat + live Notes panel + recap) + `actions.ts` (`converseTurnAction`, `finishConversationAction`).
+- 🚧 `/app/settings/` — correction intensity (`SettingsForm.tsx` + `actions.ts`). Voice/level-adjust: later.
 - ⬜ `/app/session/` — Iteration 5 (the daily-session player).
-- ⬜ `/app/recap/` — Iteration 4.
-- ⬜ `/app/settings/` — correction intensity, voice on/off, level adjust.
 - 🚧 `/components/AppShell.tsx` — left rail + main + right panel; mobile bottom tab bar.
 - 🚧 `/components/VoiceTextInput.tsx` — text input always; mic button when speech supported (text fallback).
 - 🚧 `/components/ui/` — `Button` (variant brand/secondary/tertiary), `Card` (+`CardHeading`), `Input`, `GapBar`. (Badge/Tabs/Modal/ExerciseShell: later.)
@@ -123,7 +129,7 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 | 1 | Onboarding + dual-level + dashboard gap | ✅ frozen (Ed signed off 2026-06-21; voice verified in Chrome) |
 | 2 | Reactivation Warm-up (SRS cloze) | ✅ frozen (Ed concluded testing 2026-06-21; assessment made more transparent + conservative on speaking) |
 | 3 | Bridge Drills (★ unique IP) | ✅ frozen (Hear→Repeat→Mod→Mix→Make + stuck protocol; Ed approved continuing) |
-| 4 | Guided Conversation + corrections + recap | 🚧 in progress |
+| 4 | Guided Conversation + corrections + recap | 🚧 built + self-tested (4 layers + typecheck green); pending Ed review |
 | 5 | Daily session orchestration + progress | ⬜ |
 
 Post-MVP (not scheduled): voice polish · Absorber pathway · phonetics · Q&A · curriculum · analytics · deploy hardening.
