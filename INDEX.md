@@ -48,12 +48,12 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 - ✅ `/lib/session/currentUser.ts` — single-user cookie identity (`getCurrentUserId` / `setCurrentUserId`).
 - ✅ `/lib/voice/*` — voice input surfaces live status + errors (verified working in Chrome). Full cross-browser stack: Iter 4.
 
-### SRS & reactivation (Iteration 2) — built + self-tested
-- 🚧 `/lib/srs/scheduler.ts` — expanding intervals (1→3→7→14→30→90), `reviewState`, `markKnownState` (savings→day-7), `isDue`, `freshState`. Unit-tested.
-- 🚧 `/lib/srs/matcher.ts` — `matchesCloze`/`normalizeAnswer` (case/accent/punct-insensitive; rejects wrong words). Unit-tested.
-- 🚧 `/lib/srs/seedBank.ts` — `seedItemsForPeak` (savings paradigm: items at/below peak, due now). Unit-tested.
-- 🚧 `/lib/srs/types.ts` — `PracticeItem`, `SrsState`.
-- 🚧 `/lib/exercises/reactivation/warmup.ts` — `buildWarmupBlock` (due-first, never empty). Unit + integration-tested.
+### SRS & reactivation (Iteration 2) — ✅ frozen
+- ✅ `/lib/srs/scheduler.ts` — expanding intervals (1→3→7→14→30→90), `reviewState`, `markKnownState` (savings→day-7), `isDue`, `freshState`. Unit-tested.
+- ✅ `/lib/srs/matcher.ts` — `matchesCloze`/`normalizeAnswer` (case/accent/punct-insensitive; rejects wrong words). Unit-tested.
+- ✅ `/lib/srs/seedBank.ts` — `seedItemsForPeak` (savings paradigm: items at/below peak, due now). Unit-tested.
+- ✅ `/lib/srs/types.ts` — `PracticeItem`, `SrsState`.
+- ✅ `/lib/exercises/reactivation/warmup.ts` — `buildWarmupBlock` (due-first, never empty). Unit + integration-tested.
 
 ### Pure logic (Iterations 3–5 — not yet built)
 - ⬜ `/lib/srs/interleaver.ts` — no two same exercise types adjacent.
@@ -68,7 +68,7 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 
 ### Routes / UI
 - 🚧 `/app/layout.tsx` — root layout, Oswald via link, globals. `/app/globals.css` + `/app/tokens.css` — design tokens.
-- 🚧 `/app/page.tsx` — dashboard: stored gap + bands; "Start warm-up" links to /warmup (full session = Iter 5 stub).
+- 🚧 `/app/page.tsx` — dashboard: stored gap + bands + observed-gaps transparency ("What we noticed") + recalibrate note; "Start warm-up" links to /warmup (full session = Iter 5 stub).
 - 🚧 `/app/onboarding/` — niche → background → diagnostic → goals → first win; `OnboardingWizard.tsx` (client) + `actions.ts` (`completeOnboarding`, `getFirstWinReply`).
 - 🚧 `/app/warmup/` — Reactivation Warm-up: `page.tsx` (seeds + serves a due block) + `WarmupExercise.tsx` (client) + `actions.ts` (`recordWarmupAttempt`).
 - ⬜ `/app/session/` — Iteration 5 (the daily-session player).
@@ -110,8 +110,8 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 |---|---|---|
 | 0 | Foundation & test harness | ✅ frozen (Ed signed off 2026-06-21) |
 | 1 | Onboarding + dual-level + dashboard gap | ✅ frozen (Ed signed off 2026-06-21; voice verified in Chrome) |
-| 2 | Reactivation Warm-up (SRS cloze) | 🚧 built + self-tested (4 layers + typecheck green); pending Ed review |
-| 3 | Bridge Drills (★ unique IP) | ⬜ |
+| 2 | Reactivation Warm-up (SRS cloze) | ✅ frozen (Ed concluded testing 2026-06-21; assessment made more transparent + conservative on speaking) |
+| 3 | Bridge Drills (★ unique IP) | 🚧 in progress |
 | 4 | Guided Conversation + corrections + recap | ⬜ |
 | 5 | Daily session orchestration + progress | ⬜ |
 

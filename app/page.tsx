@@ -26,6 +26,9 @@ export default async function DashboardPage() {
   const receptiveLabel = toBandLabel(user.receptiveLevel, user.confidence);
   const productiveLabel = toBandLabel(user.productiveLevel, user.confidence);
 
+  const assessments = await store.listAssessments(userId);
+  const observedGaps = assessments.at(-1)?.gaps ?? [];
+
   return (
     <AppShell
       rightPanel={
@@ -98,6 +101,28 @@ export default async function DashboardPage() {
             understand and what you can say. That&apos;s what we&apos;ll close.
           </p>
         )}
+
+        {observedGaps.length > 0 ? (
+          <div className="mt-6 border-t-divider border-ink pt-4">
+            <p className="mb-2 text-sm font-semibold uppercase text-brand">
+              What we noticed in your diagnostic
+            </p>
+            <ul
+              data-testid="observed-gaps"
+              className="list-disc pl-5 text-base text-brand"
+            >
+              {observedGaps.map((g) => (
+                <li key={g}>{g}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        <p className="mt-4 text-sm text-brand opacity-60">
+          This is an estimate from a short diagnostic — speaking is the
+          hardest skill to judge from a few answers, so we recalibrate it as you
+          speak more.
+        </p>
       </Card>
     </AppShell>
   );
