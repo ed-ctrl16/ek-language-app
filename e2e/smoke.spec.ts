@@ -18,7 +18,12 @@ test("onboard a Returner and see the gap", async ({ page }) => {
   await page.fill("#years", "8");
   await page.getByTestId("background-next").click();
 
-  // Diagnostic (text path).
+  // Diagnostic (text path). Capture it first to verify prompts are visible.
+  await expect(page.getByLabel(/tell me a little about your weekend/i)).toBeVisible();
+  await page.screenshot({
+    path: "e2e/__screenshots__/onboarding-diagnostic.png",
+    fullPage: true,
+  });
   await page.fill("#cloze-0", "fui");
   await page.fill("#cloze-1", "viajaría");
   await page.fill("#cloze-2", "estés");

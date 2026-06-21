@@ -14,12 +14,14 @@ export function VoiceTextInput({
   value,
   onChange,
   placeholder,
+  helper,
 }: {
   id: string;
   label: string;
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  helper?: string;
 }) {
   const [listening, setListening] = React.useState(false);
   const [voice] = React.useState(() => new WebVoiceClient());
@@ -39,12 +41,16 @@ export function VoiceTextInput({
 
   return (
     <div className="w-full">
+      {/* Lives on a white card → brand-colored text (heading token is white). */}
       <label
         htmlFor={id}
-        className="mb-3 block text-base font-semibold uppercase text-heading"
+        className="mb-1 block text-base font-semibold uppercase text-brand"
       >
         {label}
       </label>
+      {helper ? (
+        <p className="mb-3 text-sm text-brand opacity-70">{helper}</p>
+      ) : null}
       <div className="flex items-start gap-3">
         <textarea
           id={id}
@@ -52,13 +58,14 @@ export function VoiceTextInput({
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
           rows={2}
-          className="block w-full rounded border-4 border-ink bg-brand-secondary px-5 py-4 text-lg text-brand shadow-hard-xs placeholder:uppercase placeholder:text-body-subtle focus:border-brand-tertiary focus:outline-none"
+          className="block w-full rounded border-4 border-ink bg-brand-secondary px-5 py-4 text-lg text-brand shadow-hard-xs placeholder:text-brand placeholder:opacity-40 focus:border-brand-tertiary focus:outline-none"
         />
         {canSpeak ? (
           <button
             type="button"
             onClick={handleListen}
-            aria-label="Speak your answer"
+            aria-label="Speak your answer instead of typing"
+            title="Speak instead of typing"
             className="shrink-0 rounded border-4 border-ink bg-brand-quaternary px-4 py-4 text-base font-bold uppercase text-ink shadow-hard-xs"
           >
             {listening ? "…" : "🎤"}

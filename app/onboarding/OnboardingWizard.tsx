@@ -257,11 +257,16 @@ export function OnboardingWizard() {
                 />
               </div>
             ))}
+            <p className="border-t-divider border-ink pt-6 text-base font-semibold uppercase text-brand">
+              Now two open questions — speak or type your answer in Spanish:
+            </p>
             {DIAGNOSTIC_CONVERSATION.map((prompt, i) => (
               <VoiceTextInput
                 key={prompt}
                 id={`convo-${i}`}
                 label={prompt}
+                helper="A sentence or two is plenty. Tap the mic to speak, or just type."
+                placeholder="Tu respuesta en español…"
                 value={convo[i] ?? ""}
                 onChange={(v) =>
                   setConvo((c) => c.map((x, j) => (j === i ? v : x)))
@@ -333,11 +338,22 @@ export function OnboardingWizard() {
       {step === "firstwin" && (
         <Card>
           <CardHeading>Your first win</CardHeading>
-          <p className="mb-4 text-lg text-brand">{FIRST_WIN_OPENER}</p>
+          <p className="mb-4 text-base text-brand opacity-70">
+            Answer the question below — speak it or type it, in any mix of
+            Spanish and English. Then tap “Say it” and I&apos;ll reply.
+          </p>
+          <div className="mb-6 rounded border-4 border-ink bg-brand-soft px-5 py-4">
+            <p className="text-xl font-bold text-brand">{FIRST_WIN_OPENER}</p>
+            <p className="mt-1 text-base text-brand opacity-70">
+              (Tell me: why did you first learn Spanish?)
+            </p>
+          </div>
           <div className="flex flex-col gap-6">
             <VoiceTextInput
               id="firstwin"
-              label="Answer in any mix of Spanish and English"
+              label="Your answer"
+              helper="Speak or type — Spanish, English, or a mix is totally fine."
+              placeholder="e.g. Lo aprendí en la universidad…"
               value={firstWin}
               onChange={setFirstWin}
             />
