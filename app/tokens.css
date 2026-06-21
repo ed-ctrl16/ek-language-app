@@ -1,0 +1,56 @@
+/*
+ * Habla design tokens — derived from `ux research/SKILL.md`.
+ * Light values are the default; dark values resolve automatically.
+ * Components reference these via Tailwind semantic colors (see tailwind.config.ts).
+ * The hard offset shadows live in tailwind.config.ts (always solid black).
+ */
+:root {
+  /* Brand canvas */
+  --brand: #00592b;
+  --brand-soft: #b3d6bf;
+  --brand-strong: #003f1e;
+
+  /* Surfaces & accents */
+  --brand-secondary: #ffffff; /* white poster cards / buttons */
+  --brand-tertiary: #0023d1; /* cobalt — informational / secondary */
+  --brand-quaternary: #e374c7; /* hot pink — playful / decorative */
+
+  /* Ink & text */
+  --ink: #000000; /* borders, hard shadows */
+  --heading: #ffffff; /* heading text over the brand canvas */
+  --body: #f2ede2; /* warm cream body over the brand canvas */
+  --body-subtle: #d6ccb0;
+
+  /* States */
+  --disabled: #e8e0cc;
+  --fg-disabled: #b8ac8a;
+
+  /* Status */
+  --success: #00592b;
+  --danger: #c42424;
+  --warning: #e0a100;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand: #00592b;
+    --brand-soft: #00401f;
+    --brand-strong: #00592b;
+
+    --brand-secondary: #ffffff;
+    --brand-tertiary: #0023d1;
+    --brand-quaternary: #e374c7;
+
+    --ink: #000000;
+    --heading: #ffffff;
+    --body: #f2ede2;
+    --body-subtle: #d6ccb0;
+
+    --disabled: #00401f;
+    --fg-disabled: #4d8a6b;
+
+    --success: #007038;
+    --danger: #c42424;
+    --warning: #e0a100;
+  }
+}

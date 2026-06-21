@@ -21,17 +21,20 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 
 ## Code map (populated as we build — keep one line per module)
 
-> Status legend: ⬜ not started · 🚧 in progress · ✅ frozen
+> Status legend: ⬜ not started · 🚧 in progress / built, pending Ed sign-off · ✅ frozen
 
-### Seams (Iteration 0)
-- ⬜ `/lib/ai/AIClient.ts` — interface for all Claude calls (conversation, assess, generate, correct).
-- ⬜ `/lib/ai/AnthropicAIClient.ts` — real impl. (model choice via `claude-api` skill).
-- ⬜ `/lib/ai/MockAIClient.ts` — fixture-backed double for tests.
-- ⬜ `/lib/voice/VoiceClient.ts` — interface for STT/TTS.
-- ⬜ `/lib/voice/WebVoiceClient.ts` / `TextVoiceClient.ts` — real / text-fallback doubles.
-- ⬜ `/lib/testkit/` — fixed clock, seeded RNG, seed Returner profile, fixtures, `HABLA_TEST_MODE` wiring.
+### Seams (Iteration 0) — built + self-tested
+- 🚧 `/lib/ai/AIClient.ts` — interface for all Claude calls (starts with `complete`; grows per iteration).
+- 🚧 `/lib/ai/AnthropicAIClient.ts` — real impl, `claude-opus-4-8` + adaptive thinking (lazy-loaded; not run in test mode).
+- 🚧 `/lib/ai/MockAIClient.ts` — fixture-backed double; throws on unstubbed prompts.
+- 🚧 `/lib/ai/index.ts` — `getAIClient()` factory (mock in test mode, real otherwise).
+- 🚧 `/lib/voice/VoiceClient.ts` — interface for STT/TTS.
+- 🚧 `/lib/voice/WebVoiceClient.ts` (browser, iOS-safe) / `TextVoiceClient.ts` (text-fallback double).
+- 🚧 `/lib/time/Clock.ts` — `SystemClock` + `FixedClock` (unit-tested).
+- 🚧 `/lib/random/Random.ts` — `SystemRandom` + seeded `SeededRandom` mulberry32 (unit-tested).
+- 🚧 `/lib/testkit/` — `testMode.ts` (`HABLA_TEST_MODE`/`?test=1`), `seed.ts` (Returner profile + items), `fixtures.ts`.
 
-### Pure logic
+### Pure logic (Iterations 1–5 — not yet built)
 - ⬜ `/lib/srs/scheduler.ts` — expanding intervals, dual recognition/production state, savings fast-forward.
 - ⬜ `/lib/srs/interleaver.ts` — no two same exercise types adjacent.
 - ⬜ `/lib/levels/gap.ts` — receptive/productive bands, gap, trend, confidence framing.
@@ -45,20 +48,23 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 - ⬜ `/lib/exercises/recap/` — Iteration 4 (gap delta, wins, capped corrections, tomorrow's pattern).
 
 ### Routes / UI
+- 🚧 `/app/layout.tsx` — root layout, Oswald via link, globals. `/app/globals.css` + `/app/tokens.css` — design tokens.
+- 🚧 `/app/page.tsx` — Iteration 0 dashboard placeholder (shell + gap visual + disabled session CTA). Real wiring: Iter 1/5.
 - ⬜ `/app/onboarding/` — Iteration 1 (niche → background → diagnostic → first win).
-- ⬜ `/app/dashboard/` — Iteration 1 (gap headline + session CTA + streak + corrections).
 - ⬜ `/app/session/` — Iteration 5 (the daily-session player).
 - ⬜ `/app/recap/` — Iteration 4.
 - ⬜ `/app/settings/` — correction intensity, voice on/off, level adjust.
-- ⬜ `/components/` — design-system primitives (Button, Card, Input, Badge, Tabs, Modal, GapBar, ExerciseShell).
+- 🚧 `/components/AppShell.tsx` — left rail + main + right panel; mobile bottom tab bar.
+- 🚧 `/components/ui/` — `Button`, `Card` (+`CardHeading`), `Input`, `GapBar`. (Badge/Tabs/Modal/ExerciseShell: later.)
 
 ### Data
-- ⬜ `/supabase/migrations/` — `users`, `practice_items`, `sessions`, `attempts`, `assessments`, `events` (scope §7).
-- ⬜ `/lib/db/` — typed Supabase client + queries.
+- 🚧 `/supabase/migrations/0001_init.sql` — `users`, `practice_items`, `sessions`, `attempts`, `assessments`, `events` (authored; not yet applied to a project).
+- 🚧 `/lib/db/supabase.ts` — lazy single-user client (`getSupabase()`). Typed queries: later.
 
 ### Tests
-- ⬜ `/eval/` — prompt fixtures (correction style, level calibration, stuck-user, overcorrection, mixed-language) + runner.
-- ⬜ `/e2e/` — Playwright specs (text-mode) + `__screenshots__`.
+- 🚧 `/eval/` — `runner.ts` + `cases.ts` (one smoke case; pedagogy fixtures arrive with their iterations).
+- 🚧 `/e2e/smoke.spec.ts` — boots app in `?test=1`, asserts shell + gap, screenshots to `__screenshots__/`.
+- 🚧 unit/int co-located: `lib/random/*.test.ts`, `lib/time/*.test.ts`, `lib/ai/*.int.test.ts`.
 
 ---
 
@@ -80,7 +86,7 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 
 | # | Iteration | Status |
 |---|---|---|
-| 0 | Foundation & test harness | ⬜ |
+| 0 | Foundation & test harness | 🚧 built + self-tested (4 layers green); pending Ed review |
 | 1 | Onboarding + dual-level + dashboard gap | ⬜ |
 | 2 | Reactivation Warm-up (SRS cloze) | ⬜ |
 | 3 | Bridge Drills (★ unique IP) | ⬜ |
