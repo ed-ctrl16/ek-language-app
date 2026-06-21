@@ -26,4 +26,35 @@ export const EVAL_CASES: EvalCase[] = [
         ? null
         : `expected greeting to contain "hola", got: ${text}`,
   },
+  {
+    name: "assess: returner estimate is valid JSON with a positive gap",
+    request: {
+      fixtureKey: "assess:returner",
+      messages: [{ role: "user", content: "diagnostic answers..." }],
+    },
+    check: (text) => {
+      let parsed: { receptive?: string; productive?: string };
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        return `expected JSON, got: ${text}`;
+      }
+      const order = ["A1", "A2", "B1", "B2", "C1", "C2"];
+      const r = order.indexOf(parsed.receptive ?? "");
+      const p = order.indexOf(parsed.productive ?? "");
+      if (r < 0 || p < 0) return `invalid levels: ${text}`;
+      return r >= p ? null : `expected receptive >= productive, got ${text}`;
+    },
+  },
+  {
+    name: "first win: reply is warm and encouraging",
+    request: {
+      fixtureKey: "firstwin:reply",
+      messages: [{ role: "user", content: "Aprendí en la universidad." }],
+    },
+    check: (text) =>
+      /bien|¡|genial|vamos/i.test(text)
+        ? null
+        : `expected an encouraging Spanish reply, got: ${text}`,
+  },
 ];

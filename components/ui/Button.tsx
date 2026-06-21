@@ -22,6 +22,7 @@ const variants: Record<Variant, string> = {
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
+  "data-testid"?: string;
 }
 
 /** Signature skewed poster button. Label is counter-skewed so it reads upright. */
