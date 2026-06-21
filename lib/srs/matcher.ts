@@ -24,3 +24,24 @@ export function matchesCloze(expected: string, answer: string): boolean {
   const a = normalizeAnswer(answer);
   return a.length > 0 && a === normalizeAnswer(expected);
 }
+
+/**
+ * Word-overlap ratio for whole-sentence repetition (the Bridge "Repeat it"
+ * step). Order-insensitive and forgiving of a dropped word — repeating a model
+ * sentence aloud doesn't need to be perfect to count as reactivation.
+ */
+export function sentenceMatchRatio(expected: string, answer: string): number {
+  const expectedWords = normalizeAnswer(expected).split(" ").filter(Boolean);
+  if (expectedWords.length === 0) return 0;
+  const answerWords = new Set(normalizeAnswer(answer).split(" ").filter(Boolean));
+  const hits = expectedWords.filter((w) => answerWords.has(w)).length;
+  return hits / expectedWords.length;
+}
+
+export function matchesRepeat(
+  expected: string,
+  answer: string,
+  threshold = 0.6,
+): boolean {
+  return sentenceMatchRatio(expected, answer) >= threshold;
+}

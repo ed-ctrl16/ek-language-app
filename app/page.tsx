@@ -78,6 +78,13 @@ export default async function DashboardPage() {
             >
               <span className="[transform:skewX(15deg)]">Start warm-up</span>
             </Link>
+            <Link
+              href="/bridge"
+              data-testid="bridge-link"
+              className="inline-flex rounded bg-brand-quaternary px-8 py-3 text-xl font-bold uppercase text-ink shadow-hard-sm transition-[box-shadow] duration-500 [transform:skewX(-15deg)] hover:shadow-hard-lg"
+            >
+              <span className="[transform:skewX(15deg)]">Bridge drill</span>
+            </Link>
           </div>
         </Card>
       </div>

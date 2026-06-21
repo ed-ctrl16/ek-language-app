@@ -57,4 +57,27 @@ export const EVAL_CASES: EvalCase[] = [
         ? null
         : `expected an encouraging Spanish reply, got: ${text}`,
   },
+  {
+    name: "bridge make: returns a recast and a single short note",
+    request: {
+      fixtureKey: "bridge:make",
+      messages: [{ role: "user", content: "Cuando era niño vivia cerca del mar" }],
+    },
+    check: (text) => {
+      let parsed: { ok?: boolean; recast?: string; note?: string };
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        return `expected JSON, got: ${text}`;
+      }
+      if (typeof parsed.ok !== "boolean") return "missing ok";
+      if (!parsed.recast) return "missing recast";
+      if (!parsed.note) return "missing note";
+      // Overcorrection guard: a single, brief note — not a feed of fixes.
+      const sentences = parsed.note.split(/[.!?]+/).filter((s) => s.trim());
+      return sentences.length <= 2
+        ? null
+        : `note looks like overcorrection (${sentences.length} sentences): ${parsed.note}`;
+    },
+  },
 ];

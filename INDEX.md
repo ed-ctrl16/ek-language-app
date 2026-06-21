@@ -55,7 +55,15 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 - ✅ `/lib/srs/types.ts` — `PracticeItem`, `SrsState`.
 - ✅ `/lib/exercises/reactivation/warmup.ts` — `buildWarmupBlock` (due-first, never empty). Unit + integration-tested.
 
-### Pure logic (Iterations 3–5 — not yet built)
+### Bridge Drills (Iteration 3, ★ unique IP) — built + self-tested
+- 🚧 `/lib/exercises/bridge/types.ts` — `BridgeDrill`, `BridgeStep`, `MakeAssessment`.
+- 🚧 `/lib/exercises/bridge/steps.ts` — pure step machine (Hear→Repeat→Mod→Make→done). Unit-tested.
+- 🚧 `/lib/exercises/bridge/stuck.ts` — the stuck-protocol ladder (wait→first-word→choices→model→change-one-word→flag). Unit-tested.
+- 🚧 `/lib/exercises/bridge/generate.ts` — `generateBridgeDrill` + `assessMake` via AI seam (zod-validated). Integration-tested.
+- 🚧 `/lib/exercises/bridge/patterns.ts` — bridge-able patterns by level (`patternForLevel`).
+- 🚧 `/lib/srs/matcher.ts` extended: `matchesRepeat`/`sentenceMatchRatio` for the Repeat step. Unit-tested.
+
+### Pure logic (Iterations 4–5 — not yet built)
 - ⬜ `/lib/srs/interleaver.ts` — no two same exercise types adjacent.
 - ⬜ `/lib/session/orchestrator.ts` — pick 3 blocks + recap, time-budget to ~17 min.
 - ⬜ `/lib/session/registry.ts` — Exercise registry.
@@ -71,6 +79,7 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 - 🚧 `/app/page.tsx` — dashboard: stored gap + bands + observed-gaps transparency ("What we noticed") + recalibrate note; "Start warm-up" links to /warmup (full session = Iter 5 stub).
 - 🚧 `/app/onboarding/` — niche → background → diagnostic → goals → first win; `OnboardingWizard.tsx` (client) + `actions.ts` (`completeOnboarding`, `getFirstWinReply`).
 - 🚧 `/app/warmup/` — Reactivation Warm-up: `page.tsx` (seeds + serves a due block) + `WarmupExercise.tsx` (client) + `actions.ts` (`recordWarmupAttempt`).
+- 🚧 `/app/bridge/` — Bridge Drill: `page.tsx` (picks pattern + generates drill) + `BridgeDrillExercise.tsx` (client, 4 steps + stuck ladder) + `actions.ts` (`assessMakeAction`, `recordBridgeAttempt`).
 - ⬜ `/app/session/` — Iteration 5 (the daily-session player).
 - ⬜ `/app/recap/` — Iteration 4.
 - ⬜ `/app/settings/` — correction intensity, voice on/off, level adjust.
@@ -85,8 +94,9 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 ### Tests
 - 🚧 `/eval/` — `runner.ts` + `cases.ts` (smoke + assess-calibration + first-win warmth; more pedagogy fixtures per iteration).
 - 🚧 `/e2e/helpers.ts` — `onboardReturner(page)` shared helper. `onboarding.spec.ts` + `warmup.spec.ts` (text-path journeys, screenshots to `__screenshots__/`).
-- 🚧 unit: `lib/random`, `lib/time`, `lib/levels/cefr`, `lib/srs/{scheduler,matcher,seedBank}`, `lib/exercises/reactivation/warmup`.
-- 🚧 integration: `lib/ai`, `lib/levels/assess`, `lib/store/InMemoryStore`, `lib/exercises/reactivation/warmup.int`.
+- 🚧 unit: `lib/random`, `lib/time`, `lib/levels/cefr`, `lib/srs/{scheduler,matcher,seedBank}`, `lib/exercises/reactivation/warmup`, `lib/exercises/bridge/{steps,stuck}`.
+- 🚧 integration: `lib/ai`, `lib/levels/assess`, `lib/store/InMemoryStore`, `lib/exercises/reactivation/warmup.int`, `lib/exercises/bridge/bridge.int`.
+- 🚧 e2e: `onboarding.spec`, `warmup.spec`, `bridge.spec` (+ `helpers.ts`).
 
 ---
 
@@ -111,7 +121,7 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 | 0 | Foundation & test harness | ✅ frozen (Ed signed off 2026-06-21) |
 | 1 | Onboarding + dual-level + dashboard gap | ✅ frozen (Ed signed off 2026-06-21; voice verified in Chrome) |
 | 2 | Reactivation Warm-up (SRS cloze) | ✅ frozen (Ed concluded testing 2026-06-21; assessment made more transparent + conservative on speaking) |
-| 3 | Bridge Drills (★ unique IP) | 🚧 in progress |
+| 3 | Bridge Drills (★ unique IP) | 🚧 built + self-tested (4 layers + typecheck green); pending Ed review · "Mix it" step decision open |
 | 4 | Guided Conversation + corrections + recap | ⬜ |
 | 5 | Daily session orchestration + progress | ⬜ |
 
