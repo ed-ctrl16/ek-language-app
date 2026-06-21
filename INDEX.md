@@ -44,11 +44,18 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 - ✅ `/lib/store/InMemoryStore.ts` — default (test mode + Supabase-less local dev). Integration-tested.
 - ✅ `/lib/store/SupabaseStore.ts` — used when Supabase env is set (maps to snake_case schema).
 - ✅ `/lib/store/index.ts` — `getStore()`; in-memory singleton pinned on `globalThis` (shared across action/page bundles).
+- 🚧 Store extended (Iter 2): `listItems`/`saveItems`/`updateItem`/`saveAttempt`/`listAttempts` + `Attempt`/`PracticeItem` types, across InMemory + Supabase.
 - ✅ `/lib/session/currentUser.ts` — single-user cookie identity (`getCurrentUserId` / `setCurrentUserId`).
 - ✅ `/lib/voice/*` — voice input surfaces live status + errors (verified working in Chrome). Full cross-browser stack: Iter 4.
 
-### Pure logic (Iterations 2–5 — not yet built)
-- ⬜ `/lib/srs/scheduler.ts` — expanding intervals, dual recognition/production state, savings fast-forward.
+### SRS & reactivation (Iteration 2) — built + self-tested
+- 🚧 `/lib/srs/scheduler.ts` — expanding intervals (1→3→7→14→30→90), `reviewState`, `markKnownState` (savings→day-7), `isDue`, `freshState`. Unit-tested.
+- 🚧 `/lib/srs/matcher.ts` — `matchesCloze`/`normalizeAnswer` (case/accent/punct-insensitive; rejects wrong words). Unit-tested.
+- 🚧 `/lib/srs/seedBank.ts` — `seedItemsForPeak` (savings paradigm: items at/below peak, due now). Unit-tested.
+- 🚧 `/lib/srs/types.ts` — `PracticeItem`, `SrsState`.
+- 🚧 `/lib/exercises/reactivation/warmup.ts` — `buildWarmupBlock` (due-first, never empty). Unit + integration-tested.
+
+### Pure logic (Iterations 3–5 — not yet built)
 - ⬜ `/lib/srs/interleaver.ts` — no two same exercise types adjacent.
 - ⬜ `/lib/session/orchestrator.ts` — pick 3 blocks + recap, time-budget to ~17 min.
 - ⬜ `/lib/session/registry.ts` — Exercise registry.
@@ -61,8 +68,9 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 
 ### Routes / UI
 - 🚧 `/app/layout.tsx` — root layout, Oswald via link, globals. `/app/globals.css` + `/app/tokens.css` — design tokens.
-- 🚧 `/app/page.tsx` — dashboard: reads current user from store (→ onboarding if none); renders stored gap + bands + step count. Session CTA still a disabled stub (Iter 5).
+- 🚧 `/app/page.tsx` — dashboard: stored gap + bands; "Start warm-up" links to /warmup (full session = Iter 5 stub).
 - 🚧 `/app/onboarding/` — niche → background → diagnostic → goals → first win; `OnboardingWizard.tsx` (client) + `actions.ts` (`completeOnboarding`, `getFirstWinReply`).
+- 🚧 `/app/warmup/` — Reactivation Warm-up: `page.tsx` (seeds + serves a due block) + `WarmupExercise.tsx` (client) + `actions.ts` (`recordWarmupAttempt`).
 - ⬜ `/app/session/` — Iteration 5 (the daily-session player).
 - ⬜ `/app/recap/` — Iteration 4.
 - ⬜ `/app/settings/` — correction intensity, voice on/off, level adjust.
@@ -76,9 +84,9 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 
 ### Tests
 - 🚧 `/eval/` — `runner.ts` + `cases.ts` (smoke + assess-calibration + first-win warmth; more pedagogy fixtures per iteration).
-- 🚧 `/e2e/smoke.spec.ts` — full onboard→dashboard journey in `?test=1` (text path), screenshots to `__screenshots__/`.
-- 🚧 unit: `lib/random/*.test.ts`, `lib/time/*.test.ts`, `lib/levels/cefr.test.ts`.
-- 🚧 integration: `lib/ai/*.int.test.ts`, `lib/levels/assess.int.test.ts`, `lib/store/*.int.test.ts`.
+- 🚧 `/e2e/helpers.ts` — `onboardReturner(page)` shared helper. `onboarding.spec.ts` + `warmup.spec.ts` (text-path journeys, screenshots to `__screenshots__/`).
+- 🚧 unit: `lib/random`, `lib/time`, `lib/levels/cefr`, `lib/srs/{scheduler,matcher,seedBank}`, `lib/exercises/reactivation/warmup`.
+- 🚧 integration: `lib/ai`, `lib/levels/assess`, `lib/store/InMemoryStore`, `lib/exercises/reactivation/warmup.int`.
 
 ---
 
@@ -102,7 +110,7 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 |---|---|---|
 | 0 | Foundation & test harness | ✅ frozen (Ed signed off 2026-06-21) |
 | 1 | Onboarding + dual-level + dashboard gap | ✅ frozen (Ed signed off 2026-06-21; voice verified in Chrome) |
-| 2 | Reactivation Warm-up (SRS cloze) | 🚧 in progress |
+| 2 | Reactivation Warm-up (SRS cloze) | 🚧 built + self-tested (4 layers + typecheck green); pending Ed review |
 | 3 | Bridge Drills (★ unique IP) | ⬜ |
 | 4 | Guided Conversation + corrections + recap | ⬜ |
 | 5 | Daily session orchestration + progress | ⬜ |

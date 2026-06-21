@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/Button";
@@ -62,9 +63,19 @@ export default async function DashboardPage() {
         <Card>
           <CardHeading>Today&apos;s session</CardHeading>
           <p className="mb-6 text-lg text-brand">
-            A short, varied set of exercises — about 17 minutes.
+            The full daily session — a few varied exercises in ~17 minutes —
+            arrives in Iteration 5. For now, try a reactivation warm-up.
           </p>
-          <Button disabled>Start (coming in Iteration 5)</Button>
+          <div className="flex flex-wrap items-center gap-4">
+            <Button disabled>Full session (Iteration 5)</Button>
+            <Link
+              href="/warmup"
+              data-testid="warmup-link"
+              className="inline-flex rounded bg-brand-tertiary px-8 py-3 text-xl font-bold uppercase text-brand-secondary shadow-hard-sm transition-[box-shadow] duration-500 [transform:skewX(-15deg)] hover:shadow-hard-lg"
+            >
+              <span className="[transform:skewX(15deg)]">Start warm-up</span>
+            </Link>
+          </div>
         </Card>
       </div>
 

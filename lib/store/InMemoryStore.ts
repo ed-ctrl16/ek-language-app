@@ -1,4 +1,4 @@
-import type { Assessment, HablaUser, Store } from "./Store";
+import type { Assessment, Attempt, HablaUser, PracticeItem, Store } from "./Store";
 
 /**
  * In-memory store. Used in test mode and as the local-dev default when
@@ -8,6 +8,8 @@ import type { Assessment, HablaUser, Store } from "./Store";
 export class InMemoryStore implements Store {
   private users = new Map<string, HablaUser>();
   private assessments: Assessment[] = [];
+  private items = new Map<string, PracticeItem>();
+  private attempts: Attempt[] = [];
 
   async getUser(id: string): Promise<HablaUser | null> {
     return this.users.get(id) ?? null;
@@ -25,5 +27,25 @@ export class InMemoryStore implements Store {
     return this.assessments
       .filter((a) => a.userId === userId)
       .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  }
+
+  async listItems(userId: string): Promise<PracticeItem[]> {
+    return [...this.items.values()].filter((i) => i.userId === userId);
+  }
+
+  async saveItems(items: PracticeItem[]): Promise<void> {
+    for (const item of items) this.items.set(item.id, item);
+  }
+
+  async updateItem(item: PracticeItem): Promise<void> {
+    this.items.set(item.id, item);
+  }
+
+  async saveAttempt(attempt: Attempt): Promise<void> {
+    this.attempts.push(attempt);
+  }
+
+  async listAttempts(userId: string): Promise<Attempt[]> {
+    return this.attempts.filter((a) => a.userId === userId);
   }
 }

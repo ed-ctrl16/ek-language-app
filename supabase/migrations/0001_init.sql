@@ -29,8 +29,10 @@ create table if not exists users (
 );
 
 -- practice_items (SRS / pattern bank) --------------------------------------
+-- id is text (not uuid) so deterministic seed ids ("seed-A2-0") and generated
+-- ids can coexist; seeding is idempotent (only runs when a user has no items).
 create table if not exists practice_items (
-  id uuid primary key default gen_random_uuid(),
+  id text primary key,
   user_id uuid not null references users(id) on delete cascade,
   item_type item_type not null,
   prompt text not null,
@@ -66,7 +68,7 @@ create table if not exists attempts (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references users(id) on delete cascade,
   session_id uuid references sessions(id) on delete set null,
-  practice_item_id uuid references practice_items(id) on delete set null,
+  practice_item_id text references practice_items(id) on delete set null,
   prompt_shown text,
   expected_target text,
   user_transcript text,

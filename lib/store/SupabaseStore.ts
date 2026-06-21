@@ -1,5 +1,52 @@
 import { getSupabase } from "@/lib/db/supabase";
-import type { Assessment, HablaUser, Store } from "./Store";
+import type { Assessment, Attempt, HablaUser, PracticeItem, Store } from "./Store";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function rowToItem(row: any): PracticeItem {
+  return {
+    id: row.id,
+    userId: row.user_id,
+    itemType: row.item_type,
+    prompt: row.prompt,
+    target: row.target,
+    topic: row.topic,
+    level: row.level,
+    recognition: {
+      intervalDays: row.recognition_interval_days,
+      streak: row.recognition_streak,
+      nextDue: row.recognition_next_due,
+    },
+    production: {
+      intervalDays: row.production_interval_days,
+      streak: row.production_streak,
+      nextDue: row.production_next_due,
+    },
+    source: row.source,
+    isSavings: row.is_savings,
+    createdAt: row.created_at,
+  };
+}
+
+function itemToRow(item: PracticeItem) {
+  return {
+    id: item.id,
+    user_id: item.userId,
+    item_type: item.itemType,
+    prompt: item.prompt,
+    target: item.target,
+    topic: item.topic,
+    level: item.level,
+    recognition_interval_days: item.recognition.intervalDays,
+    recognition_next_due: item.recognition.nextDue,
+    recognition_streak: item.recognition.streak,
+    production_interval_days: item.production.intervalDays,
+    production_next_due: item.production.nextDue,
+    production_streak: item.production.streak,
+    source: item.source,
+    is_savings: item.isSavings,
+  };
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 /**
  * Supabase-backed store. Used when NEXT_PUBLIC_SUPABASE_* env is set.
@@ -79,5 +126,71 @@ export class SupabaseStore implements Store {
       gaps: row.raw?.gaps ?? [],
       createdAt: row.created_at,
     }));
+  }
+
+  async listItems(userId: string): Promise<PracticeItem[]> {
+    const { data, error } = await getSupabase()
+      .from("practice_items")
+      .select("*")
+      .eq("user_id", userId);
+    if (error) throw error;
+    return (data ?? []).map(rowToItem);
+  }
+
+  async saveItems(items: PracticeItem[]): Promise<void> {
+    if (items.length === 0) return;
+    const { error } = await getSupabase()
+      .from("practice_items")
+      .upsert(items.map(itemToRow));
+    if (error) throw error;
+  }
+
+  async updateItem(item: PracticeItem): Promise<void> {
+    const { error } = await getSupabase()
+      .from("practice_items")
+      .upsert(itemToRow(item));
+    if (error) throw error;
+  }
+
+  async saveAttempt(a: Attempt): Promise<void> {
+    const { error } = await getSupabase().from("attempts").insert({
+      id: a.id,
+      user_id: a.userId,
+      session_id: a.sessionId,
+      practice_item_id: a.practiceItemId,
+      prompt_shown: a.promptShown,
+      expected_target: a.expectedTarget,
+      user_transcript: a.userTranscript,
+      latency_ms: a.latencyMs,
+      completed: a.completed,
+      correction: a.correction,
+      should_reappear: a.shouldReappear,
+    });
+    if (error) throw error;
+  }
+
+  async listAttempts(userId: string): Promise<Attempt[]> {
+    const { data, error } = await getSupabase()
+      .from("attempts")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: true });
+    if (error) throw error;
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    return (data ?? []).map((row: any) => ({
+      id: row.id,
+      userId: row.user_id,
+      sessionId: row.session_id,
+      practiceItemId: row.practice_item_id,
+      promptShown: row.prompt_shown,
+      expectedTarget: row.expected_target,
+      userTranscript: row.user_transcript,
+      latencyMs: row.latency_ms,
+      completed: row.completed,
+      correction: row.correction,
+      shouldReappear: row.should_reappear,
+      createdAt: row.created_at,
+    }));
+    /* eslint-enable @typescript-eslint/no-explicit-any */
   }
 }
