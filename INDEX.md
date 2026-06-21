@@ -44,6 +44,19 @@ Purpose: **load the least context needed to do the task.** Find the task below, 
 - ✅ `/lib/store/InMemoryStore.ts` — default (test mode + Supabase-less local dev). Integration-tested.
 - ✅ `/lib/store/SupabaseStore.ts` — used when Supabase env is set (maps to snake_case schema).
 - ✅ `/lib/store/index.ts` — `getStore()`; in-memory singleton pinned on `globalThis` (shared across action/page bundles).
+
+### Auth (post-MVP) — Supabase login/logout
+- 🚧 `/lib/db/supabase.ts` — `getServerSupabase()` (cookie/session-aware) + `isSupabaseConfigured()`.
+- 🚧 `/lib/db/supabaseBrowser.ts` + `/middleware.ts` — browser client + session refresh (no-op without Supabase).
+- 🚧 `/lib/session/currentUser.ts` — async `getCurrentUserId()`: Supabase auth user (real) or `habla_uid` cookie (test/local); `authRedirectPath()`.
+- 🚧 `/app/login/` (form + page), `/app/auth/actions.ts` (`logout`), logout in Settings.
+- 🚧 `/supabase/migrations/0002_auth_rls.sql` — per-user RLS policies (`auth.uid()`).
+
+### Content variety (post-MVP) — fresh content on repeat sessions
+- 🚧 `/lib/exercises/bridge/patterns.ts` — `patternForRotation(level, n)`; expanded bank.
+- 🚧 `/lib/exercises/conversation/missions.ts` — `missionForRotation(level, n)`.
+- 🚧 `/lib/exercises/reactivation/generate.ts` — `generateWarmupItems` (AI cloze) + `prepare.ts` (`prepareWarmupItems`: due + top-up).
+- session/exercise pages rotate by sessions-completed; warm-up generates fresh items as the queue empties.
 - 🚧 Store extended (Iter 2): `listItems`/`saveItems`/`updateItem`/`saveAttempt`/`listAttempts` + `Attempt`/`PracticeItem` types, across InMemory + Supabase.
 - ✅ `/lib/session/currentUser.ts` — single-user cookie identity (`getCurrentUserId` / `setCurrentUserId`).
 - ✅ `/lib/voice/*` — voice input surfaces live status + errors (verified working in Chrome). Full cross-browser stack: Iter 4.

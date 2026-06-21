@@ -39,14 +39,25 @@ const MISSIONS: Omit<ConversationMission, "maxTurns">[] = [
   },
 ];
 
-/** Pick a mission at or just below the user's productive level. */
-export function pickMission(level: CefrLevel): ConversationMission {
+function eligibleMissions(level: CefrLevel): Omit<ConversationMission, "maxTurns">[] {
   const target = levelIndex(level);
   const eligible = MISSIONS.filter((m) => levelIndex(m.level) <= target);
-  const chosen = (eligible.length > 0 ? eligible : MISSIONS).reduce((best, m) =>
+  return eligible.length > 0 ? eligible : MISSIONS;
+}
+
+/** Pick the hardest eligible mission (deterministic — used where rotation isn't needed). */
+export function pickMission(level: CefrLevel): ConversationMission {
+  const chosen = eligibleMissions(level).reduce((best, m) =>
     levelIndex(m.level) > levelIndex(best.level) ? m : best,
   );
   return { ...chosen, maxTurns: MAX_TURNS };
+}
+
+/** Rotate through eligible missions by index `n` (e.g. sessions completed). */
+export function missionForRotation(level: CefrLevel, n: number): ConversationMission {
+  const eligible = eligibleMissions(level);
+  const i = ((n % eligible.length) + eligible.length) % eligible.length;
+  return { ...eligible[i]!, maxTurns: MAX_TURNS };
 }
 
 export { CEFR_LEVELS };

@@ -8,18 +8,18 @@ import {
   planDailySession,
 } from "@/lib/session/orchestrator";
 import { EXERCISES } from "@/lib/session/registry";
-import { seedItemsForPeak } from "@/lib/srs/seedBank";
-import { buildWarmupBlock } from "@/lib/exercises/reactivation/warmup";
+import { prepareWarmupItems } from "@/lib/exercises/reactivation/prepare";
 import { generateBridgeDrill } from "@/lib/exercises/bridge/generate";
-import { patternForLevel } from "@/lib/exercises/bridge/patterns";
+import { patternForRotation } from "@/lib/exercises/bridge/patterns";
 import { buildMix, seedFromString } from "@/lib/exercises/bridge/mix";
-import { pickMission } from "@/lib/exercises/conversation/missions";
+import { missionForRotation } from "@/lib/exercises/conversation/missions";
 import { SessionPlayer } from "./SessionPlayer";
 
 /**
- * The daily session (Iteration 5) — the whole product loop. Plans an interleaved,
- * time-budgeted set of blocks and fetches each one's data, then hands off to the
- * SessionPlayer which runs them in sequence and rolls the streak at the end.
+ * The daily session — the whole product loop. Plans an interleaved, time-budgeted
+ * set of blocks, fetches each one's data, then hands off to the SessionPlayer.
+ * Content rotates by sessions completed so consecutive sessions (even same day)
+ * vary; the warm-up tops up with freshly generated items as the queue empties.
  */
 export default async function SessionPage() {
   const userId = await getCurrentUserId();
@@ -28,39 +28,37 @@ export default async function SessionPage() {
   const user = await store.getUser(userId);
   if (!user) redirect("/onboarding");
 
+  const now = new Date();
+  const ai = await getAIClient();
+  // Rotation index: how many sessions completed so far → new content each session.
+  const rotation = (await store.listSessions(userId)).length;
+
   const plan = planDailySession(
     EXERCISES,
     DEFAULT_SESSION_BUDGET_MIN,
-    new SeededRandom(seedFromString(userId)),
+    new SeededRandom(seedFromString(userId) + rotation),
   );
 
-  const now = new Date();
+  // Warm-up (seed + due + top-up with generated content).
+  const warmupItems = await prepareWarmupItems(
+    store,
+    ai,
+    userId,
+    user.peakLevel,
+    user.productiveLevel,
+    now,
+  );
 
-  // Warm-up block (seed on first ever visit).
-  let items = await store.listItems(userId);
-  if (items.length === 0) {
-    const seeded = seedItemsForPeak(user.peakLevel, userId, now);
-    await store.saveItems(seeded);
-    items = seeded;
-  }
-  const warmupItems = buildWarmupBlock(items, now, 5).map((i) => ({
-    id: i.id,
-    prompt: i.prompt,
-    target: i.target,
-    level: i.level,
-  }));
-
-  // Bridge drill + Mix scramble.
-  const ai = await getAIClient();
-  const { pattern, level } = patternForLevel(user.productiveLevel);
+  // Bridge drill — rotate the target pattern.
+  const { pattern, level } = patternForRotation(user.productiveLevel, rotation);
   const bridgeDrill = await generateBridgeDrill(ai, { pattern, level });
   const bridgeMix = buildMix(
     bridgeDrill.make.modelAnswer,
     new SeededRandom(seedFromString(bridgeDrill.make.modelAnswer)),
   );
 
-  // Conversation mission.
-  const mission = pickMission(user.productiveLevel);
+  // Conversation — rotate the mission.
+  const mission = missionForRotation(user.productiveLevel, rotation);
 
   return (
     <SessionPlayer

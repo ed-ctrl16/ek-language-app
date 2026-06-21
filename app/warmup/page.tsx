@@ -1,14 +1,14 @@
 import { redirect } from "next/navigation";
 import { getCurrentUserId, authRedirectPath } from "@/lib/session/currentUser";
 import { getStore } from "@/lib/store";
-import { seedItemsForPeak } from "@/lib/srs/seedBank";
-import { buildWarmupBlock } from "@/lib/exercises/reactivation/warmup";
+import { getAIClient } from "@/lib/ai";
+import { prepareWarmupItems } from "@/lib/exercises/reactivation/prepare";
 import { WarmupExercise } from "./WarmupExercise";
 
 /**
- * Reactivation Warm-up (Iteration 2). Standalone exercise route — runnable
- * before the daily-session orchestrator exists. Seeds savings-paradigm items
- * on first visit (idempotent), then serves a due block.
+ * Reactivation Warm-up. Seeds savings-paradigm items on first visit, serves the
+ * due block, and tops up with freshly generated items when due items run short
+ * (so repeat sessions get new content).
  */
 export default async function WarmupPage() {
   const userId = await getCurrentUserId();
@@ -18,20 +18,15 @@ export default async function WarmupPage() {
   const user = await store.getUser(userId);
   if (!user) redirect("/onboarding");
 
-  const now = new Date();
-  let items = await store.listItems(userId);
-  if (items.length === 0) {
-    const seeded = seedItemsForPeak(user.peakLevel, userId, now);
-    await store.saveItems(seeded);
-    items = seeded;
-  }
+  const ai = await getAIClient();
+  const items = await prepareWarmupItems(
+    store,
+    ai,
+    userId,
+    user.peakLevel,
+    user.productiveLevel,
+    new Date(),
+  );
 
-  const block = buildWarmupBlock(items, now, 5).map((i) => ({
-    id: i.id,
-    prompt: i.prompt,
-    target: i.target,
-    level: i.level,
-  }));
-
-  return <WarmupExercise items={block} />;
+  return <WarmupExercise items={items} />;
 }

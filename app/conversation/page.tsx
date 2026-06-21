@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUserId, authRedirectPath } from "@/lib/session/currentUser";
 import { getStore } from "@/lib/store";
-import { pickMission } from "@/lib/exercises/conversation/missions";
+import { missionForRotation } from "@/lib/exercises/conversation/missions";
 import { ConversationMissionUI } from "./ConversationMissionUI";
 
 /**
@@ -15,6 +15,7 @@ export default async function ConversationPage() {
   const user = await store.getUser(userId);
   if (!user) redirect("/onboarding");
 
-  const mission = pickMission(user.productiveLevel);
+  const rotation = (await store.listSessions(userId)).length;
+  const mission = missionForRotation(user.productiveLevel, rotation);
   return <ConversationMissionUI mission={mission} />;
 }

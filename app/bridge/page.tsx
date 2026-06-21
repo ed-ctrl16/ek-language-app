@@ -3,7 +3,7 @@ import { getCurrentUserId, authRedirectPath } from "@/lib/session/currentUser";
 import { getStore } from "@/lib/store";
 import { getAIClient } from "@/lib/ai";
 import { generateBridgeDrill } from "@/lib/exercises/bridge/generate";
-import { patternForLevel } from "@/lib/exercises/bridge/patterns";
+import { patternForRotation } from "@/lib/exercises/bridge/patterns";
 import { buildMix, seedFromString } from "@/lib/exercises/bridge/mix";
 import { SeededRandom } from "@/lib/random/Random";
 import { BridgeDrillExercise } from "./BridgeDrillExercise";
@@ -21,7 +21,8 @@ export default async function BridgePage() {
   const user = await store.getUser(userId);
   if (!user) redirect("/onboarding");
 
-  const { pattern, level } = patternForLevel(user.productiveLevel);
+  const rotation = (await store.listSessions(userId)).length;
+  const { pattern, level } = patternForRotation(user.productiveLevel, rotation);
   const ai = await getAIClient();
   const drill = await generateBridgeDrill(ai, { pattern, level });
 

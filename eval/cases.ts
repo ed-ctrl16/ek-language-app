@@ -129,4 +129,27 @@ export const EVAL_CASES: EvalCase[] = [
       return null;
     },
   },
+  {
+    name: "warmup generate: items each have a blank, target, and topic",
+    request: {
+      fixtureKey: "warmup:generate",
+      messages: [{ role: "user", content: "Level: B1\nHow many: 3" }],
+    },
+    check: (text) => {
+      let parsed: { items?: { prompt?: string; target?: string; topic?: string }[] };
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        return `expected JSON, got: ${text}`;
+      }
+      if (!Array.isArray(parsed.items) || parsed.items.length === 0) {
+        return "missing items";
+      }
+      for (const it of parsed.items) {
+        if (!it.prompt?.includes("___")) return `item missing a blank: ${it.prompt}`;
+        if (!it.target || !it.topic) return "item missing target/topic";
+      }
+      return null;
+    },
+  },
 ];

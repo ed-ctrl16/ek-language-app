@@ -19,3 +19,22 @@ export function buildWarmupBlock(
   const pool = due.length > 0 ? due : [...items].sort(byDue);
   return pool.slice(0, size);
 }
+
+/**
+ * Due items only (no fallback to old items) — the caller tops up with freshly
+ * generated content when this comes up short, so repeat sessions get new material.
+ */
+export function selectDueWarmup(
+  items: PracticeItem[],
+  now: Date,
+  size = 5,
+): PracticeItem[] {
+  return items
+    .filter((i) => isDue(i.production, now))
+    .sort(
+      (a, b) =>
+        Date.parse(a.production.nextDue ?? "0") -
+        Date.parse(b.production.nextDue ?? "0"),
+    )
+    .slice(0, size);
+}

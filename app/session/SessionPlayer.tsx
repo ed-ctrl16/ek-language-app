@@ -63,12 +63,21 @@ export function SessionPlayer({ data }: { data: SessionData }) {
               the gap.
             </p>
           ) : null}
-          <Link
-            href="/"
-            className="text-base font-bold uppercase text-brand underline"
-          >
-            Back to dashboard
-          </Link>
+          <div className="flex flex-wrap items-center gap-6">
+            <a
+              href="/session"
+              data-testid="another-session"
+              className="inline-flex rounded bg-brand-tertiary px-8 py-3 text-xl font-bold uppercase text-brand-secondary shadow-hard-sm transition-[box-shadow] duration-500 [transform:skewX(-15deg)] hover:shadow-hard-lg"
+            >
+              <span className="[transform:skewX(15deg)]">Another session</span>
+            </a>
+            <Link
+              href="/"
+              className="text-base font-bold uppercase text-brand underline"
+            >
+              Back to dashboard
+            </Link>
+          </div>
         </Card>
       </Shell>
     );

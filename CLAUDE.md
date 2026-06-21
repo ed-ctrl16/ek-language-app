@@ -19,6 +19,8 @@ Full scope: `habla_v4_scope.md`. How we build: `BUILD_PLAN.md`. How it looks: `U
 3. **One ~15–20 min session/day.** We are not building an app that demands hours. Maximise *exposure and variety* within that budget, not time-on-app.
 4. **The gap is the product.** Track receptive + productive levels separately; show the gap as the headline. Use **bands + trend + confidence**, never false-precision exact CEFR labels.
 5. **Voice everywhere, text fallback everywhere.** Every voice interaction has a working text-equivalent path. The text path is the path our automated tests drive.
+
+   **Auth modes (post-MVP):** real mode (Supabase configured) uses Supabase Auth — `getCurrentUserId()` returns the logged-in user, pages redirect to `/login`, and `SupabaseStore` runs under per-user RLS. Test/local mode (no Supabase env, or `HABLA_TEST_MODE=1`) uses a `habla_uid` cookie + `InMemoryStore` so the deterministic harness needs no backend. Keep both paths working — `getCurrentUserId()` is async.
 6. **Build behind the seams.** No component imports the Anthropic SDK, Web Speech API, `Date.now()`, or `Math.random()` directly. They come through `AIClient`, `VoiceClient`, `Clock`, `Random`. This is what makes the app self-testable.
 7. **Prompts are pedagogy.** A prompt change is a behaviour change → it requires an eval run (`npm run eval`).
 8. **One iteration at a time.** Build, self-test (4 layers), hand to Ed, freeze. Don't start the next iteration mid-flight. Don't smuggle in deferred features.

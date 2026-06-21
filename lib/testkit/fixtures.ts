@@ -53,4 +53,15 @@ export const AI_FIXTURES: Record<string, string> = {
     saidWell: "You clearly explained you'd be late and gave a reason — that's the whole job.",
     patternToReview: "running late + reason (voy a llegar tarde porque...)",
   }),
+
+  // Post-MVP — freshly generated warm-up cloze items (variety on repeat sessions).
+  "warmup:generate": JSON.stringify({
+    items: [
+      { prompt: "Normalmente ___ (desayunar) a las ocho.", target: "desayuno", topic: "routine" },
+      { prompt: "Anoche ___ (ver) una película muy buena.", target: "vi", topic: "past" },
+      { prompt: "Quiero que tú ___ (venir) a la fiesta.", target: "vengas", topic: "wishes" },
+      { prompt: "Si llueve mañana, ___ (quedarse, nosotros) en casa.", target: "nos quedamos", topic: "plans" },
+      { prompt: "Cuando llegué, ellos ya ___ (irse).", target: "se habían ido", topic: "past" },
+    ],
+  }),
 };
